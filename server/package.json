@@ -1,0 +1,26 @@
+{
+  "name": "timetable",
+  "version": "1.0.0",
+  "description": "A Application to generate Timetable for Educational instituation",
+  "main": "app.ts",
+  "scripts": {
+    "test": "npx nodemon app.ts",
+    "dev": "npx nodemon app.ts"
+  },
+  "keywords": [
+    "timetable",
+    "generator"
+  ],
+  "author": "praveen",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "http-status-codes": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0"
+  }
+}
