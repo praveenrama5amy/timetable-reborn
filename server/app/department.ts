@@ -1,4 +1,9 @@
 import fs from "fs"
+import path from "path"
+
+
+import config from "./config"
+import { GlobalConfig } from "../types/interface"
 const DEFAULT = {
     CONFIG: {
         daysPerWeek: 5,
@@ -7,11 +12,12 @@ const DEFAULT = {
 }
 
 
-const create = (name: string) => {
+const create = (name: string, dir: string) => {
     try {
         name = name.toUpperCase();
-        fs.mkdirSync(`./data/${name}`, { recursive: true })
-        createRequiredFiles(name)
+        fs.mkdirSync(path.join(config.dataFolder, dir, name), { recursive: true })
+        createRequiredFiles(path.join(dir, name))
+        initializeTimetableFile(path.join(dir, name))
         return true
     }
     catch (err) {
@@ -19,36 +25,92 @@ const create = (name: string) => {
         return false
     }
 }
-const exists = (name:string) => {
-    const folders = fs.readdirSync("./data")
-    if (folders.find(dept => dept == name)) {
+const exists = (dir: string) => {
+    if (fs.existsSync(path.join(config.dataFolder, dir)))
         return true
-    }
     return false
 }
-console.log(exists("MCA"));
 
-
-const createRequiredFiles = (deptName:string) => {
+const get = (dir: string) => {
+    if (!exists(dir)) return {
+        error: {
+            error: "DepartmentNotFound",
+            message: "department requested is not found"
+        }
+    }
+    createRequiredFiles(dir);
+    let classes: Array<string> = [];
+    let faculties: Array<string> = [];
+    let subjects: Array<string> = [];
+    let globalConfig: GlobalConfig = DEFAULT.CONFIG;
+    let timetable: Array<string | null | undefined> = [];
     try {
-        fs.writeFileSync(`./data/${deptName}/config.json`,JSON.stringify(DEFAULT.CONFIG),{encoding:"utf-8"})
-        fs.writeFileSync(`./data/${deptName}/classes.json`,"[]",{encoding:"utf-8"})
-        fs.writeFileSync(`./data/${deptName}/faculties.json`,"[]",{encoding:"utf-8"})
-        fs.writeFileSync(`./data/${deptName}/subjects.json`,"[]",{encoding:"utf-8"})
-        fs.writeFileSync(`./data/${deptName}/timetable.json`,"[]",{encoding:"utf-8"})
+        classes = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.classes), { encoding: "utf-8" }))
+    } catch { }
+    try {
+        faculties = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.faculties), { encoding: "utf-8" }))
+    } catch { }
+    try {
+        subjects = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.subjects), { encoding: "utf-8" }))
+    } catch { }
+    try {
+        globalConfig = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.config), { encoding: "utf-8" }))
+    } catch { }
+    try {
+        timetable = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.timeTableFolder, config.files.config), { encoding: "utf-8" }))
+    } catch { }
+
+    return {
+        department: {
+            classes, faculties, subjects, config: globalConfig, timetable
+        }
+    }
+}
+
+
+const createRequiredFiles = (dir: string, overwrite?: boolean) => {
+    try {
+        const files = fs.readdirSync(path.join(config.dataFolder, dir))
+        if (files.find(file => file == config.files.config) == null || overwrite)
+            fs.writeFileSync(path.join(config.dataFolder, dir, config.files.config), JSON.stringify(DEFAULT.CONFIG), { encoding: "utf-8" })
+        if (files.find(file => file == config.files.classes) == null || overwrite)
+            fs.writeFileSync(path.join(config.dataFolder, dir, config.files.classes), "[]", { encoding: "utf-8" })
+        if (files.find(file => file == config.files.faculties) == null || overwrite)
+            fs.writeFileSync(path.join(config.dataFolder, dir, config.files.faculties), "[]", { encoding: "utf-8" })
+        if (files.find(file => file == config.files.subjects) == null || overwrite)
+            fs.writeFileSync(path.join(config.dataFolder, dir, config.files.subjects), "[]", { encoding: "utf-8" })
+        if (files.find(file => file == config.files.timeTableFolder) == null || overwrite)
+            fs.mkdirSync(path.join(config.dataFolder, dir, config.files.timeTableFolder), { recursive: true })
+        const filesInTimeTable = fs.readdirSync(path.join(config.dataFolder, dir, config.files.timeTableFolder))
+        if (filesInTimeTable.find(file => file == config.files.timetableFile) == null || overwrite)
+            fs.writeFileSync(path.join(config.dataFolder, dir, config.files.timeTableFolder, config.files.timetableFile), "[]", { encoding: "utf-8" })
     } catch (err) {
         console.log(err);
         return false
-        
+
     }
 }
-const initializeTimetableFile = (deptName:string) => {
-    
-}
 
-const remove = (name: string) => {
+const initializeTimetableFile = async (dir: string) => {
+    createRequiredFiles(dir)
+    const { department, error } = get(dir)
+    if (error) return { error }
+    let { config, timetable } = department
+    console.log(timetable);
+    timetable = timetable.map((value, i) => {
+        if (i < config.daysPerWeek)
+            return value
+        else return null
+    })
+
+
+    // fs.writeFileSync(path.join(dir,"timetable","timetable.json"),JSON.stringify(""),{encoding:"utf-8"})
+}
+initializeTimetableFile("1/MCA")
+
+const remove = (dir: string) => {
     try {
-        fs.rmSync(`./data/${name}`,{recursive:true,force:true})
+        fs.rmSync(dir, { recursive: true, force: true })
         return true
     } catch (err) {
         console.log(err);
@@ -59,5 +121,8 @@ const remove = (name: string) => {
 
 export {
     create,
-    remove
+    exists,
+    createRequiredFiles,
+    remove,
+    get
 }

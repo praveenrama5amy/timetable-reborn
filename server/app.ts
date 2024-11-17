@@ -27,8 +27,3 @@ app.use("/", indexRouter)
 import departmentRouter from "./routes/department"
 app.use("/department",departmentRouter)
 
-
-
-
-var a: string = "as"
-
