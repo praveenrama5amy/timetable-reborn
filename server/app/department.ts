@@ -43,7 +43,7 @@ const get = (dir: string) => {
     let faculties: Array<string> = [];
     let subjects: Array<string> = [];
     let globalConfig: GlobalConfig = DEFAULT.CONFIG;
-    let timetable: Array<string | null | undefined> = [];
+    let timetable: Array<Array<string | null | undefined>> = [];
     try {
         classes = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.classes), { encoding: "utf-8" }))
     } catch { }
@@ -95,18 +95,18 @@ const initializeTimetableFile = async (dir: string) => {
     createRequiredFiles(dir)
     const { department, error } = get(dir)
     if (error) return { error }
-    let { config, timetable } = department
+    let { config: generalSettings, timetable } = department
     console.log(timetable);
-    timetable = timetable.map((value, i) => {
-        if (i < config.daysPerWeek)
-            return value
-        else return null
-    })
-
-
-    // fs.writeFileSync(path.join(dir,"timetable","timetable.json"),JSON.stringify(""),{encoding:"utf-8"})
+    for (let i = 0; i < generalSettings.daysPerWeek; i++) {
+        for (let j = 0; j < generalSettings.hoursPerDay; j++) {
+            if (timetable[i] == null) timetable[i] = []
+            if (timetable[i][j] == null) timetable[i][j] = null
+        }
+    }
+    fs.writeFileSync(path.join(config.dataFolder, dir, config.files.timeTableFolder, config.files.timetableFile), JSON.stringify(timetable), { encoding: "utf-8" })
 }
-initializeTimetableFile("1/MCA")
+const setConfig = (dir: string, config: {}) => {
+}
 
 const remove = (dir: string) => {
     try {
