@@ -25,5 +25,12 @@ app.use(express.static('public'));
 import indexRouter from "./routes/index"
 app.use("/", indexRouter)
 import departmentRouter from "./routes/department"
-app.use("/department",departmentRouter)
-
+app.use("/department", departmentRouter)
+import classRouter from "./routes/class"
+app.use("/class", classRouter)
+import facultyRouter from "./routes/faculty"
+app.use("/faculty", facultyRouter)
+import subjectRouter from "./routes/subject"
+app.use("/subject", subjectRouter)
+import conflictRouter from "./routes/conflict"
+app.use("/conflict", conflictRouter)

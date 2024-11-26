@@ -5,7 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "test": "npx nodemon app.ts",
-    "dev": "npx nodemon app.ts -i ./data"
+    "dev": "npx nodemon app.ts -i ./data",
+    "start": "npx nodemon app.ts -i ./data"
   },
   "keywords": [
     "timetable",

@@ -1,0 +1,30 @@
+* {
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+}
+
+.rightdiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+
+    background-color: whitesmoke;
+    padding: 5px;
+    border-radius: 20px;
+    border: 1px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0.1, 0.3);
+    width: 13%;
+}
+
+.inside {
+
+    background-color: rgb(245, 0, 0);
+    padding: 2px;
+    border-radius: 20px;
+    border: 1px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0.1, 0.3);
+    width: 10%;
+}

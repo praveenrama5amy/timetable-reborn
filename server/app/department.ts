@@ -3,7 +3,7 @@ import path from "path"
 
 
 import config from "./config"
-import { GlobalConfig } from "../types/interface"
+import { DepartmentInterface, GlobalConfig } from "../types/interface"
 const DEFAULT = {
     CONFIG: {
         daysPerWeek: 5,
@@ -34,16 +34,16 @@ const exists = (dir: string) => {
 const get = (dir: string) => {
     if (!exists(dir)) return {
         error: {
-            error: "DepartmentNotFound",
+            name: "DepartmentNotFound",
             message: "department requested is not found"
         }
     }
     createRequiredFiles(dir);
-    let classes: Array<string> = [];
-    let faculties: Array<string> = [];
-    let subjects: Array<string> = [];
-    let globalConfig: GlobalConfig = DEFAULT.CONFIG;
-    let timetable: Array<Array<string | null | undefined>> = [];
+    let classes: DepartmentInterface['classes'] = [];
+    let faculties: DepartmentInterface['faculties'] = [];
+    let subjects: DepartmentInterface['subjects'] = [];
+    let globalConfig: DepartmentInterface['globalConfig'] = DEFAULT.CONFIG;
+    let timetable: DepartmentInterface['timetable'] = [[]];
     try {
         classes = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.classes), { encoding: "utf-8" }))
     } catch { }
@@ -57,11 +57,11 @@ const get = (dir: string) => {
         globalConfig = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.config), { encoding: "utf-8" }))
     } catch { }
     try {
-        timetable = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.timeTableFolder, config.files.config), { encoding: "utf-8" }))
+        timetable = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.timeTableFolder, config.files.timetableFile), { encoding: "utf-8" }))
     } catch { }
-
     return {
         department: {
+            name: path.basename(path.join(config.dataFolder, dir)),
             classes, faculties, subjects, config: globalConfig, timetable
         }
     }
@@ -95,27 +95,69 @@ const initializeTimetableFile = async (dir: string) => {
     createRequiredFiles(dir)
     const { department, error } = get(dir)
     if (error) return { error }
-    let { config: generalSettings, timetable } = department
-    console.log(timetable);
+    const { config: generalSettings, timetable } = department
+    const newTimeTable: Array<Array<string | null | undefined>> = []
     for (let i = 0; i < generalSettings.daysPerWeek; i++) {
+        const dayT: Array<string | null | undefined> = []
         for (let j = 0; j < generalSettings.hoursPerDay; j++) {
-            if (timetable[i] == null) timetable[i] = []
-            if (timetable[i][j] == null) timetable[i][j] = null
+            if (newTimeTable[i] == null) timetable[i] = []
+            dayT.push(timetable[i][j] || null);
         }
+        newTimeTable.push(dayT)
     }
-    fs.writeFileSync(path.join(config.dataFolder, dir, config.files.timeTableFolder, config.files.timetableFile), JSON.stringify(timetable), { encoding: "utf-8" })
+    fs.writeFileSync(path.join(config.dataFolder, dir, config.files.timeTableFolder, config.files.timetableFile), JSON.stringify(newTimeTable), { encoding: "utf-8" })
 }
-const setConfig = (dir: string, config: {}) => {
+
+const setConfig = (dir: string, configPassed: {
+    daysPerWeek?: GlobalConfig['daysPerWeek'],
+    hoursPerDay?: GlobalConfig['hoursPerDay']
+}) => {
+    const { department, error } = get(dir)
+    if (error) return { error }
+    const { config: generalSettings } = department
+    if (configPassed.daysPerWeek) generalSettings.daysPerWeek = configPassed.daysPerWeek
+    if (configPassed.hoursPerDay) generalSettings.hoursPerDay = configPassed.hoursPerDay
+    fs.writeFileSync(path.join(config.dataFolder, dir, config.files.config), JSON.stringify(generalSettings), { encoding: "utf-8" });
+    initializeTimetableFile(dir);
 }
+
+const set = (
+    dir: string,
+    { subjects, classes, faculties, timetable }: {
+        subjects?: DepartmentInterface['subjects'],
+        classes?: DepartmentInterface['classes'],
+        faculties?: DepartmentInterface['faculties'],
+        timetable?: DepartmentInterface['timetable']
+    }
+) => {
+    const { department, error } = get(dir)
+    if (error) return { error }
+    if (subjects) fs.writeFileSync(path.join(config.dataFolder, dir, config.files.subjects), JSON.stringify(subjects), { encoding: "utf-8" });
+    if (classes) fs.writeFileSync(path.join(config.dataFolder, dir, config.files.classes), JSON.stringify(classes), { encoding: "utf-8" });
+    if (faculties) fs.writeFileSync(path.join(config.dataFolder, dir, config.files.faculties), JSON.stringify(faculties), { encoding: "utf-8" });
+    if (timetable) fs.writeFileSync(path.join(config.dataFolder, dir, config.files.timetableFile), JSON.stringify(timetable), { encoding: "utf-8" });
+}
+
 
 const remove = (dir: string) => {
     try {
-        fs.rmSync(dir, { recursive: true, force: true })
+        fs.rmSync(path.join(config.dataFolder, dir), { recursive: true, force: true })
         return true
     } catch (err) {
         console.log(err);
         return false
     }
+}
+
+const getUserDepartments = (dir: string) => {
+    if (!exists(dir)) return {
+        error: {
+            error: "UserNotFound",
+            message: "user requested not found"
+        }
+    }
+    const depts = fs.readdirSync(path.join(config.dataFolder, dir))
+    return { departments: depts }
 }
 
 
@@ -124,5 +166,9 @@ export {
     exists,
     createRequiredFiles,
     remove,
-    get
+    get,
+    setConfig,
+    initializeTimetableFile,
+    getUserDepartments,
+    set
 }

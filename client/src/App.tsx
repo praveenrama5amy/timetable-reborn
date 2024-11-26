@@ -1,19 +1,11 @@
-import { useState } from "react"
-import Login from "./Login"
-import Register from "./Register"
 
 function App() {
-  const [page, setPage] = useState("login")
-  return <div className="h-100">
+
+  return (
     <div>
-      <button onClick={() => { setPage("login") }}>Login</button>
-      <button onClick={() => { setPage("register") }}>Register</button>
-    </div>
-    {page == "login" && <Login />}
-    {page == "register" && <Register />}
-  </div>
+        <h1>welcome to the App</h1>
+   </div>
+  )
 }
 
-
 export default App
-
