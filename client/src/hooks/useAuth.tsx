@@ -2,12 +2,12 @@ import { useState, useContext, createContext, ReactNode, Dispatch, SetStateActio
 
 
 interface UserContext {
-    loading: [boolean, Dispatch<SetStateAction<boolean>>],
+    user: [boolean, Dispatch<SetStateAction<boolean>>],
 }
 
 
 const UserContext = createContext<UserContext>({
-    loading: [true, () => { return null }],
+    user: [true, () => { return null }],
 })
 
 export const useUserContext = () => {
@@ -16,10 +16,10 @@ export const useUserContext = () => {
 
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
-    const loading = useState<boolean>(true);
+    const user = useState<boolean>(true);
 
     return <UserContext.Provider value={{
-        loading,
+        user,
     }}>
         {children}
     </UserContext.Provider>
