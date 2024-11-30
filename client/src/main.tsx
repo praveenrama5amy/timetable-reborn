@@ -11,6 +11,7 @@ import Subjects from './pages/Subjects.tsx';
 import Summary from './pages/Summary.tsx';
 import Settings from './pages/Settings.tsx';
 
+
 import Nav from './pages/Nav.tsx';
 
 //BootStrap Icons 
