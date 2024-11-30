@@ -2,7 +2,7 @@ import { SubjectType } from "../types/interface"
 
 import * as Department from "./department"
 
-const create = (dir: string, subject: { name: SubjectType['name'], min: SubjectType['min'], max: SubjectType['max'] }) => {
+const create = (dir: string, subject: { name: SubjectType['name'], consecutive: SubjectType['consecutive'], hoursPerWeek: SubjectType['hoursPerWeek'], priority: SubjectType['priority'] }) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }
     if (department.subjects.find(e => e.name == subject.name)) return { error: { name: "SubjectCreationFailed", message: "subject already exists" } }
@@ -12,7 +12,7 @@ const create = (dir: string, subject: { name: SubjectType['name'], min: SubjectT
     return { status: { success: true, message: "subject created", id } }
 }
 
-const edit = (dir: string, subject: { id: SubjectType['id'], name?: SubjectType['name'], min?: SubjectType['min'], max?: SubjectType['max'] }) => {
+const edit = (dir: string, subject: { id: SubjectType['id'], name?: SubjectType['name'], consecutive?: SubjectType['consecutive'], hoursPerWeek?: SubjectType['hoursPerWeek'], priority: SubjectType['priority'] }) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }
     if (department.subjects.find(e => e.id == subject.id) == null) return { error: { name: "SubjectNotFound", message: "subject requested is not found" } }
@@ -20,8 +20,9 @@ const edit = (dir: string, subject: { id: SubjectType['id'], name?: SubjectType[
     department.subjects = department.subjects.map(e => e.id == subject.id ? {
         id: subject.id,
         name: subject.name || e.name,
-        max: subject.max || e.max,
-        min: subject.min || e.min,
+        consecutive: subject.consecutive || e.consecutive,
+        hoursPerWeek: subject.hoursPerWeek || e.hoursPerWeek,
+        priority: subject.priority || e.priority,
     } : e)
     Department.set(dir, { subjects: department.subjects })
     return { status: { success: true, message: "subject edited" } }

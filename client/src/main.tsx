@@ -22,13 +22,15 @@ createRoot(document.getElementById('root')!).render(
     <Routes>
       <Route path='/login' element={<Login />} />
       <Route path="/Register" element={<Register />} />
-      <Route path="/App" element={<App />} />
-      <Route path='/' element={<Nav />}>
-        <Route path="/classes" element={<Classes />} />
-        <Route path="/faculties" element={<Faculties />} />
-        <Route path="/subjects" element={<Subjects />} />
-        <Route path="/summary" element={<Summary />} />
-        <Route path="/settings" element={<Settings />} />
+      <Route path='/'>
+        <Route path="/" element={<App />} index />
+        <Route path='/' element={<Nav />}>
+          <Route path="/classes" element={<Classes />} />
+          <Route path="/faculties" element={<Faculties />} />
+          <Route path="/subjects" element={<Subjects />} />
+          <Route path="/summary" element={<Summary />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
       </Route>
     </Routes>
   </BrowserRouter >

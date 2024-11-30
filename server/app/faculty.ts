@@ -2,17 +2,17 @@ import { ClassType, FacultyType } from "../types/interface"
 
 import * as Department from "./department"
 
-const create = (dir: string, faculty: { name: FacultyType['name'], min: FacultyType['min'], max: FacultyType['max'] }) => {
+const create = (dir: string, faculty: { name: FacultyType['name'], min: FacultyType['min'], max: FacultyType['max'], busy: FacultyType['busy'] }) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }
     if (department.faculties.find(e => e.name == faculty.name)) return { error: { name: "FacultyCreationFailed", message: "faculty already exists" } }
     const id = Date.now()
-    department.faculties.push({ id, ...faculty })
+    department.faculties.push({ id, ...faculty, busy: faculty.busy || [[]] })
     Department.set(dir, { faculties: department.faculties })
     return { status: { success: true, message: "faculty created", id } }
 }
 
-const edit = (dir: string, faculty: { id: FacultyType['id'], name?: FacultyType['name'], min?: FacultyType['min'], max?: FacultyType['max'] }) => {
+const edit = (dir: string, faculty: { id: FacultyType['id'], name?: FacultyType['name'], min?: FacultyType['min'], max?: FacultyType['max'], busy: FacultyType['busy'] }) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }
     if (department.faculties.find(e => e.id == faculty.id) == null) return { error: { name: "FacultyNotFound", message: "faculty requested is not found" } }
@@ -22,6 +22,7 @@ const edit = (dir: string, faculty: { id: FacultyType['id'], name?: FacultyType[
         name: faculty.name || e.name,
         max: faculty.max || e.max,
         min: faculty.min || e.min,
+        busy: faculty.busy || e.busy
     } : e)
     Department.set(dir, { faculties: department.faculties })
     return { status: { success: true, message: "faculty edited" } }

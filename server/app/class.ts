@@ -2,15 +2,15 @@ import { ClassType, FacultyType, SubjectType } from "../types/interface"
 
 import * as Department from "./department"
 
-const create = (dir: string, roomName: ClassType['name']) => {
+const create = (dir: string, room: ClassType) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }
-    if (department.classes.find(e => e.name == roomName)) return { error: "ClassCreationFailed", message: "class name already exists" }
+    if (department.classes.find(e => e.name == room.name)) return { error: { name: "ClassCreationFailed", message: "class name already exists" } }
     const id = Date.now()
     department.classes.push({
-        id,
-        name: roomName,
-        subjects: []
+        ...room,
+        id: Date.now(),
+        subjects: room.subjects || []
     })
     Department.set(dir, { classes: department.classes })
     return { status: { success: true, message: "class created", id } }

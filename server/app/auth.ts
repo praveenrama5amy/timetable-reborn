@@ -34,10 +34,13 @@ export const verify = (token: string) => {
 export const sign = (payload: any) => {
     return jwt.sign(payload, PRIVATE_KEY, { expiresIn: "10d", algorithm: "RS256" })
 }
+// console.log(sign({id:1,username:"Praveen",email:"praveenramasamy123@gmail.com",avatar:""}));
+
 
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(" ")[1]
+
     if (token == null || token == "") {
         res.status(StatusCodes.UNAUTHORIZED).json({ error: "UnAuthorized", message: ReasonPhrases.UNAUTHORIZED })
         return

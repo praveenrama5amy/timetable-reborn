@@ -1,7 +1,1 @@
-[
-  {
-    "id": 1732644976590,
-    "name": "I-MCA-G1",
-    "subjects": [{ "subject": 1732647129325, "faculties": [1732647629828] }]
-  }
-]
+[{"department":"mca","name":"I-MCA-G1","hoursPerDay":7,"daysPerWeek":5,"id":1732894226896,"subjects":[]},{"department":"mca","name":"I-MCA-G2","hoursPerDay":7,"daysPerWeek":5,"id":1732894231026,"subjects":[]}]

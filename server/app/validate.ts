@@ -23,6 +23,8 @@ export const classReq = {
     create: Joi.object({
         department: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{2,30}$')).required().trim(),
         name: Joi.string().required().trim(),
+        hoursPerDay: Joi.number().required(),
+        daysPerWeek: Joi.number().required(),
     }),
     remove: Joi.object({
         department: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{2,30}$')).required().trim(),
@@ -31,8 +33,10 @@ export const classReq = {
     edit: Joi.object({
         department: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{2,30}$')).required().trim(),
         id: Joi.number().required(),
-        name: Joi.string().required().trim(),
-    }),
+        name: Joi.string().trim(),
+        hoursPerDay: Joi.number(),
+        daysPerWeek: Joi.number(),
+    }).or("daysPerWeek", "hoursPerDay", "name"),
     addSubject: Joi.object({
         department: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{2,30}$')).required().trim(),
         classId: Joi.number().required(),
@@ -52,7 +56,8 @@ export const facultyReq = {
         faculty: Joi.object({
             name: Joi.string().required().trim(),
             min: Joi.number().required(),
-            max: Joi.number().required()
+            max: Joi.number().required(),
+            busy: Joi.array().items(Joi.array().items(Joi.number())).optional()
         }).required()
     }),
     remove: Joi.object({
@@ -64,8 +69,9 @@ export const facultyReq = {
         id: Joi.number().required(),
         name: Joi.string().trim(),
         min: Joi.number(),
-        max: Joi.number()
-    }).or("min", "max", "name")
+        max: Joi.number(),
+        busy: Joi.array().items(Joi.array().items(Joi.number()))
+    }).or("min", "max", "name", "busy")
 
 }
 export const subjectReq = {
@@ -73,8 +79,9 @@ export const subjectReq = {
         department: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{2,30}$')).required().trim(),
         subject: Joi.object({
             name: Joi.string().required().trim(),
-            min: Joi.number().required(),
-            max: Joi.number().required()
+            consecutive: Joi.number().required(),
+            hoursPerWeek: Joi.number().required(),
+            priority: Joi.number().required(),
         }).required()
     }),
     remove: Joi.object({
@@ -85,8 +92,9 @@ export const subjectReq = {
         department: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{2,30}$')).required().trim(),
         id: Joi.number().required(),
         name: Joi.string().trim(),
-        min: Joi.number(),
-        max: Joi.number()
-    }).or("min", "max", "name")
+        hoursPerWeek: Joi.number(),
+        consecutive: Joi.number(),
+        priority: Joi.number(),
+    }).or("consecutive", "hoursPerWeek", "name", "priority")
 
 }

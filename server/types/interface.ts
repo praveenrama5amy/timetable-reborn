@@ -26,6 +26,8 @@ export interface DepartmentInterface {
 export type ClassType = {
     id: number,
     name: string,
+    daysPerWeek: number
+    hoursPerDay: number
     subjects: Array<{
         subject: SubjectType['id'],
         faculties: Array<FacultyType['id']>
@@ -36,12 +38,14 @@ export type FacultyType = {
     name: string,
     min: number,
     max: number,
+    busy: Array<Array<number>>
 }
 export type SubjectType = {
     id: number,
     name: string,
-    min: number,
-    max: number,
+    hoursPerWeek: number,
+    consecutive: number,
+    priority: number,
 }
 export type TimetableHourType = string | null | undefined
 

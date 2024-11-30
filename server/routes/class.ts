@@ -20,7 +20,7 @@ router.post("/", authMiddleware, (req, res) => {
             res.status(StatusCodes.BAD_REQUEST).json({ error: "ValidationError", message: validationError.message })
             return
         }
-        const { error, status } = Class.create(path.join(req.user?.id + "", value.department), value.name)
+        const { error, status } = Class.create(path.join(req.user?.id + "", value.department), value)
         if (error) {
             res.json({ error })
             return

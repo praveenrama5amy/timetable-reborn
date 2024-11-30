@@ -1,1 +1,9 @@
-[{"id":1732647129325,"name":"Web Tech","min":4,"max":5}]
+[
+  {
+    "id": 1732893884606,
+    "name": "Web Tech",
+    "hoursPerWeek": 4,
+    "consecutive": 1,
+    "priority": 2
+  }
+]
