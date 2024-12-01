@@ -7,7 +7,7 @@ const create = (dir: string, faculty: { name: FacultyType['name'], min: FacultyT
     if (error) return { error }
     if (department.faculties.find(e => e.name == faculty.name)) return { error: { name: "FacultyCreationFailed", message: "faculty already exists" } }
     const id = Date.now()
-    department.faculties.push({ id, ...faculty, busy: faculty.busy || [[]] })
+    department.faculties.push({ id, ...faculty, busy: faculty.busy || [[]], timetable: [] })
     Department.set(dir, { faculties: department.faculties })
     return { status: { success: true, message: "faculty created", id } }
 }
@@ -16,13 +16,10 @@ const edit = (dir: string, faculty: { id: FacultyType['id'], name?: FacultyType[
     const { error, department } = Department.get(dir)
     if (error) return { error }
     if (department.faculties.find(e => e.id == faculty.id) == null) return { error: { name: "FacultyNotFound", message: "faculty requested is not found" } }
-    if (department.faculties.find(e => e.name == faculty.name)) return { error: { name: "FacultyEditedFailed", message: "faculty name provided already exists" } }
+    if (department.faculties.find(e => e.name == faculty.name && e.id != faculty.id)) return { error: { name: "FacultyEditedFailed", message: "faculty name provided already exists" } }
     department.faculties = department.faculties.map(e => e.id == faculty.id ? {
-        id: faculty.id,
-        name: faculty.name || e.name,
-        max: faculty.max || e.max,
-        min: faculty.min || e.min,
-        busy: faculty.busy || e.busy
+        ...e,
+        faculty
     } : e)
     Department.set(dir, { faculties: department.faculties })
     return { status: { success: true, message: "faculty edited" } }
@@ -47,10 +44,30 @@ const remove = (dir: string, facultyId: FacultyType['id']) => {
     return { status: { success: true, message: "faculty removed" } }
 }
 
+const initializeFacultyTimetable = (dir: string, facultyId?: FacultyType['id']) => {
+    const { department, error } = Department.get(dir)
+    if (error) return { error }
+    department.faculties.forEach((faculty, index) => {
+        if (facultyId != null && faculty.id != facultyId) return
+        if (department.faculties[index].timetable == null) department.faculties[index].timetable = []
+        let newTimeTable: ClassType['timetable'] = []
+        for (let i = 0; i < department.config.daysPerWeek; i++) {
+            if (department.faculties[index].timetable[i] == null) department.faculties[index].timetable[i] = []
+            if (newTimeTable[i] == null) newTimeTable[i] = []
+            for (let j = 0; j < department.config.hoursPerDay; j++) {
+                newTimeTable[i][j] = department.faculties[index].timetable[i][j] || null
+                // department.faculties[index].timetable[i][j] = department.faculties[index].timetable[i][j] || null
+            }
+        }
+        department.faculties[index].timetable = newTimeTable
+    })
+    Department.set(dir, { faculties: department.faculties })
+}
 
 
 export {
     create,
     edit,
-    remove
+    remove,
+    initializeFacultyTimetable,
 }

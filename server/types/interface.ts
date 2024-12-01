@@ -21,7 +21,9 @@ export interface DepartmentInterface {
     faculties: Array<FacultyType>;
     subjects: Array<SubjectType>;
     globalConfig: GlobalConfig;
-    timetable: Array<Array<TimetableHourType>>;
+    timetable?: {
+        [key: string]: Array<Array<TimetableHourType>>
+    };
 }
 export type ClassType = {
     id: number,
@@ -32,6 +34,7 @@ export type ClassType = {
         subject: SubjectType['id'],
         faculties: Array<FacultyType['id']>
     }>
+    timetable: Array<Array<TimetableHourType>>
 }
 export type FacultyType = {
     id: number,
@@ -39,6 +42,7 @@ export type FacultyType = {
     min: number,
     max: number,
     busy: Array<Array<number>>
+    timetable: Array<Array<TimetableHourType>>
 }
 export type SubjectType = {
     id: number,
@@ -46,12 +50,16 @@ export type SubjectType = {
     hoursPerWeek: number,
     consecutive: number,
     priority: number,
+    before: number | 0
+    after: number | 0
 }
-export type TimetableHourType = string | null | undefined
+export type TimetableHourType = null | undefined | SubjectType['id']
 
 
 export interface ConflictInterface {
-    message: string,
     type: "room" | "faculty" | "subject",
-    maker: string
+    maker: ClassType | FacultyType,
+    error: string,
+    message: string,
+    solutions: Array<string>
 }

@@ -2,27 +2,64 @@ import { SubjectType } from "../types/interface"
 
 import * as Department from "./department"
 
-const create = (dir: string, subject: { name: SubjectType['name'], consecutive: SubjectType['consecutive'], hoursPerWeek: SubjectType['hoursPerWeek'], priority: SubjectType['priority'] }) => {
+const create = (dir: string, subject: { name: SubjectType['name'], consecutive: SubjectType['consecutive'], hoursPerWeek: SubjectType['hoursPerWeek'], priority: SubjectType['priority'], before?: SubjectType['before'], after?: SubjectType['after'] }) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }
+    if (subject.before && subject.before > department.config.hoursPerDay) return {
+        error: {
+            name: "ValidationError",
+            message: `before can't be greater than ${department.config.hoursPerDay}`
+        }
+    }
+    if (subject.after && subject.after > department.config.hoursPerDay - 1) return {
+        error: {
+            name: "ValidationError",
+            message: `after can't be greater than ${department.config.hoursPerDay}`
+        }
+    }
+    if (subject.after && subject.before && subject.after >= subject.before) return {
+        error: {
+            name: "ValidationError",
+            message: `after can't be greater than before`
+        }
+    }
     if (department.subjects.find(e => e.name == subject.name)) return { error: { name: "SubjectCreationFailed", message: "subject already exists" } }
     const id = Date.now()
-    department.subjects.push({ id, ...subject })
+    department.subjects.push({
+        id,
+        after: 0,
+        before: 0,
+        ...subject,
+    })
     Department.set(dir, { subjects: department.subjects })
     return { status: { success: true, message: "subject created", id } }
 }
 
-const edit = (dir: string, subject: { id: SubjectType['id'], name?: SubjectType['name'], consecutive?: SubjectType['consecutive'], hoursPerWeek?: SubjectType['hoursPerWeek'], priority: SubjectType['priority'] }) => {
+const edit = (dir: string, subject: { id: SubjectType['id'], name?: SubjectType['name'], consecutive?: SubjectType['consecutive'], hoursPerWeek?: SubjectType['hoursPerWeek'], priority: SubjectType['priority'], before: SubjectType['before'], after: SubjectType['after'] }) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }
+    if (subject.before && subject.before > department.config.hoursPerDay) return {
+        error: {
+            name: "ValidationError",
+            message: `before can't be greater than ${department.config.hoursPerDay}`
+        }
+    }
+    if (subject.after && subject.after > department.config.hoursPerDay) return {
+        error: {
+            name: "ValidationError",
+            message: `after can't be greater than ${department.config.hoursPerDay}`
+        }
+    }
     if (department.subjects.find(e => e.id == subject.id) == null) return { error: { name: "SubjectNotFound", message: "subject requested is not found" } }
-    if (department.subjects.find(e => e.name == subject.name)) return { error: { name: "SubjectEditedFailed", message: "subject name provided already exists" } }
+    if (department.subjects.find(e => e.name == subject.name && e.id != subject.id)) return { error: { name: "SubjectEditedFailed", message: "subject name provided already exists" } }
     department.subjects = department.subjects.map(e => e.id == subject.id ? {
         id: subject.id,
         name: subject.name || e.name,
         consecutive: subject.consecutive || e.consecutive,
         hoursPerWeek: subject.hoursPerWeek || e.hoursPerWeek,
         priority: subject.priority || e.priority,
+        before: subject.before || e.before || 0,
+        after: subject.after || e.after || 0,
     } : e)
     Department.set(dir, { subjects: department.subjects })
     return { status: { success: true, message: "subject edited" } }

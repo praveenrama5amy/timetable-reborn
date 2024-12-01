@@ -6,6 +6,8 @@ const create = (dir: string, room: ClassType) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }
     if (department.classes.find(e => e.name == room.name)) return { error: { name: "ClassCreationFailed", message: "class name already exists" } }
+    if (room.daysPerWeek > department.config.daysPerWeek) return { error: { name: "DaysExceed", message: "days per week for class can't be greater than days per week of global settings" } }
+    if (room.hoursPerDay > department.config.hoursPerDay) return { error: { name: "HoursExceed", message: "hours per day for class can't be greater than hours per day of global settings" } }
     const id = Date.now()
     department.classes.push({
         ...room,
@@ -13,6 +15,7 @@ const create = (dir: string, room: ClassType) => {
         subjects: room.subjects || []
     })
     Department.set(dir, { classes: department.classes })
+    Department.initializeClassTimetable(dir)
     return { status: { success: true, message: "class created", id } }
 }
 const remove = (dir: string, id: ClassType['id']) => {
@@ -28,8 +31,11 @@ const edit = (dir: string, room: ClassType) => {
     if (error) return { error }
     if (department.classes.find(e => e.id == room.id) == null) return { error: { name: "ClassNotFound", message: "class requested is not found" } }
     if (department.classes.find(e => e.name == room.name)) return { error: { name: "ClassEditFailed", message: "new name provided already exists" } }
-    department.classes = department.classes.map(e => e.id != room.id ? e : room)
+    if (room.daysPerWeek > department.config.daysPerWeek) return { error: { name: "DaysExceed", message: "days per week for class can't be greater than days per week of global settings" } }
+    if (room.hoursPerDay > department.config.hoursPerDay) return { error: { name: "HoursExceed", message: "hours per day for class can't be greater than hours per day of global settings" } }
+    department.classes = department.classes.map(e => e.id != room.id ? e : { ...e, ...room })
     Department.set(dir, { classes: department.classes })
+    if (room.daysPerWeek || room.hoursPerDay) Department.initializeClassTimetable(dir)
     return { status: { success: true, message: "class edited" } }
 }
 

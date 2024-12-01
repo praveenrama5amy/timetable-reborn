@@ -82,6 +82,8 @@ export const subjectReq = {
             consecutive: Joi.number().required(),
             hoursPerWeek: Joi.number().required(),
             priority: Joi.number().required(),
+            before: Joi.number().min(0).optional(),
+            after: Joi.number().min(0).optional(),
         }).required()
     }),
     remove: Joi.object({
@@ -95,6 +97,8 @@ export const subjectReq = {
         hoursPerWeek: Joi.number(),
         consecutive: Joi.number(),
         priority: Joi.number(),
-    }).or("consecutive", "hoursPerWeek", "name", "priority")
+        before: Joi.number().min(0),
+        after: Joi.number().min(0),
+    }).or("consecutive", "hoursPerWeek", "name", "priority", "before", "after")
 
 }

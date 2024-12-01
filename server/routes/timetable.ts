@@ -2,13 +2,17 @@ import { Router } from "express"
 import { StatusCodes } from "http-status-codes"
 
 import * as Conflict from "../app/conflict"
+import * as Timetable from "../app/timetable"
 
 import { authMiddleware } from "../app/auth"
 import path from "path"
 import { pathValidate } from "../app/validate"
+import { TIMEOUT } from "dns"
 
 const router = Router()
 
+
+Timetable
 
 router.get("/:name", authMiddleware, (req, res) => {
     try {
@@ -17,8 +21,7 @@ router.get("/:name", authMiddleware, (req, res) => {
             res.json({ error: validationError })
             return
         }
-        const stat = Conflict.validateEntries(path.join(req.user?.id + '', value.name))
-        res.json(stat)
+        res.json({})
     } catch (err) {
         console.log(err);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err)

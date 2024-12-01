@@ -31,5 +31,7 @@ import subjectRouter from "./routes/subject"
 app.use("/subject", subjectRouter)
 import conflictRouter from "./routes/conflict"
 app.use("/conflict", conflictRouter)
+import timetableRouter from "./routes/timetable"
+app.use("/timetable", timetableRouter)
 import userRouter from "./routes/user"
 app.use("/user", userRouter)
