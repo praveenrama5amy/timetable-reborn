@@ -9,6 +9,7 @@ if (envError) throw envError;
 
 const app = express()
 app.listen(env?.HTTP_PORT || 3000, () => {
+
     console.log(`Server listening on PORT ${env?.HTTP_PORT || 3000}`);
 })
 
