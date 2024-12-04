@@ -53,7 +53,7 @@ router.put("/config", authMiddleware, (req, res) => {
         return
     }
 
-    Department.setConfig(path.join(req.user?.id + "", department.name), validation.value)
+    Department.setConfig(path.join(req.user?.id + "", department.name!), validation.value)
     res.json({ status: { success: "ConfigUpdated", message: "configuration has been updated successfully" } })
 })
 

@@ -43,7 +43,7 @@ const get = (dir: string) => {
     let classes: DepartmentInterface['classes'] = [];
     let faculties: DepartmentInterface['faculties'] = [];
     let subjects: DepartmentInterface['subjects'] = [];
-    let globalConfig: DepartmentInterface['globalConfig'] = DEFAULT.CONFIG;
+    let globalConfig: DepartmentInterface['config'] = DEFAULT.CONFIG;
     let timetable: DepartmentInterface['timetable'] = {};
     try {
         classes = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.classes), { encoding: "utf-8" }))
@@ -60,12 +60,13 @@ const get = (dir: string) => {
     try {
         timetable = JSON.parse(fs.readFileSync(path.join(config.dataFolder, dir, config.files.timeTableFolder, config.files.timetableFile), { encoding: "utf-8" }))
     } catch { }
+    const department: DepartmentInterface = {
+        name: path.basename(path.join(config.dataFolder, dir)),
+        classes, faculties, subjects, config: globalConfig,
+        timetable
+    }
     return {
-        department: {
-            name: path.basename(path.join(config.dataFolder, dir)),
-            classes, faculties, subjects, config: globalConfig,
-            timetable
-        }
+        department
     }
 }
 

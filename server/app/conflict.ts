@@ -44,6 +44,15 @@ const validateEntries = (dir: string) => {
             message: `${faculty.name} exceeding maximum criteria, exceeding ${allocation.faculties[faculty.id] - faculty.min} hours`
         })
     })
+    department.subjects.forEach(subject => {
+        if (subject.hoursPerWeek % subject.consecutive != 0) conflicts.push({
+            error: "InvalidSubjectHour",
+            maker: subject,
+            type: "subject",
+            message: `${subject.name} must be in multiply of ${subject.consecutive}`,
+            solutions: [`make hours per week to multiply of ${subject.consecutive}`]
+        })
+    })
     return { conflicts }
 }
 const getAllocation = (dir: string) => {

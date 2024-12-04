@@ -17,10 +17,11 @@ export interface GlobalConfig {
 }
 
 export interface DepartmentInterface {
+    name: string
     classes: Array<ClassType>;
     faculties: Array<FacultyType>;
     subjects: Array<SubjectType>;
-    globalConfig: GlobalConfig;
+    config: GlobalConfig;
     timetable?: {
         [key: string]: Array<Array<TimetableHourType>>
     };
@@ -58,7 +59,7 @@ export type TimetableHourType = null | undefined | SubjectType['id']
 
 export interface ConflictInterface {
     type: "room" | "faculty" | "subject",
-    maker: ClassType | FacultyType,
+    maker: ClassType | FacultyType | SubjectType,
     error: string,
     message: string,
     solutions: Array<string>
