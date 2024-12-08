@@ -7,9 +7,10 @@ const create = (dir: string, faculty: { name: FacultyType['name'], min: FacultyT
     if (error) return { error }
     if (department.faculties.find(e => e.name == faculty.name)) return { error: { name: "FacultyCreationFailed", message: "faculty already exists" } }
     const id = Date.now()
-    department.faculties.push({ id, ...faculty, busy: faculty.busy || [[]], timetable: [] })
+    const facult = { id, ...faculty, busy: faculty.busy || [[]], timetable: [] }
+    department.faculties.push(facult)
     Department.set(dir, { faculties: department.faculties })
-    return { status: { success: true, message: "faculty created", id } }
+    return { status: { success: true, message: "faculty created", id, faculty: facult } }
 }
 
 const edit = (dir: string, faculty: { id: FacultyType['id'], name?: FacultyType['name'], min?: FacultyType['min'], max?: FacultyType['max'], busy: FacultyType['busy'] }) => {
@@ -22,7 +23,7 @@ const edit = (dir: string, faculty: { id: FacultyType['id'], name?: FacultyType[
         faculty
     } : e)
     Department.set(dir, { faculties: department.faculties })
-    return { status: { success: true, message: "faculty edited" } }
+    return { status: { success: true, message: "faculty edited", faculty: department.faculties.find(e => e.id == faculty.id) } }
 }
 
 const remove = (dir: string, facultyId: FacultyType['id']) => {

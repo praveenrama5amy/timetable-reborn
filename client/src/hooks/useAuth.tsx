@@ -1,29 +1,31 @@
-import { useState, useContext, createContext, ReactNode, Dispatch, SetStateAction } from 'react';
+import { useEffect } from "react"
+import { useAuthContext } from "../context/AuthContext"
+import axios from "../api/axios"
 
+const useAuth = () => {
+    const [user, setUser] = useAuthContext().user
+    const [token, setToken] = useAuthContext().token
+    useEffect(() => {
+        if (token == null) return
+        axios.get("/user/me", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(res => {
+            if (res.data && res.data.user) {
+                setUser(res.data.user)
+            } else {
+                console.log(res.data);
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    }, [token])
 
-interface UserContext {
-    user: [boolean, Dispatch<SetStateAction<boolean>>],
+    return {
+        user, setUser, token, setToken
+
+    }
 }
 
-
-const UserContext = createContext<UserContext>({
-    user: [true, () => { return null }],
-})
-
-export const useUserContext = () => {
-    return useContext(UserContext)
-}
-
-
-const UserProvider = ({ children }: { children: ReactNode }) => {
-    const user = useState<boolean>(true);
-
-    return <UserContext.Provider value={{
-        user,
-    }}>
-        {children}
-    </UserContext.Provider>
-}
-
-
-export default UserProvider
+export default useAuth

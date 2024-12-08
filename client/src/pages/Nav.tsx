@@ -1,42 +1,45 @@
+import { useState } from "react"
+import { useNavigate } from "react-router"
+import useAppData from "../hooks/useAppData"
 
-import { useNavigate, Outlet } from "react-router"
 
 const Nav = () => {
+    const [profileSelected, setProfileSelected] = useAppData().profile
+    const [departments] = useAppData().departments
     const navigate = useNavigate()
+    const [page, setPage] = useState("home")
+    const go = (link: string) => {
+        navigate(link)
+        setPage(link)
+    }
+    if (profileSelected == null || departments.find(e => e == profileSelected) == null) {
+        setProfileSelected(departments[0])
+    }
+
 
     return (
-        <div style={{ height: "100%" }}>
-            <nav className="navbar navbar-expand-lg bg-body-tertiary">
-                <div className="container-fluid">
-                    <a className="navbar-brand" href="#">MENU</a>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                    <div className="collapse navbar-collapse" id="navbarNav" style={{ paddingLeft: "62%" }}>
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <a className="nav-link" href="#" onClick={() => { navigate("/classes") }}><i className="bi bi-person-video3"></i>&nbsp;Classes</a>
+        <nav className="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+            <div className="container-fluid">
+                <div className="navbar-nav flex flex-row me-auto gap-3 w-100">
+                    <li className="nav-item dropdown">
+                        <a className="nav-link dropdown-toggle navbar-brand" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {profileSelected}
+                        </a>
+                        <ul className="dropdown-menu absolute">
+                            {departments.map(department => <li key={department}>
+                                <a className="dropdown-item" href="#" onClick={() => { setProfileSelected(department) }}>{department}</a>
                             </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="#" onClick={() => { navigate("/faculties") }}><i className="bi bi-people-fill"></i>&nbsp;Faculties</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="#" onClick={() => { navigate("/subjects") }}><i className="bi bi-book-half"></i>&nbsp;Subjects</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="#" onClick={() => { navigate("/summary") }}><i className="bi bi-body-text"></i>&nbsp;Summary</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="#" onClick={() => { navigate("/settings") }}><i className="bi bi-gear-wide-connected"></i>&nbsp;Settings</a>
-                            </li>
+                            )}
                         </ul>
-                    </div>
+                    </li>
+                    <a className={`nav-link ${page == "home" && "active"}`} href="#" onClick={() => { go("home") }}>Home</a>
+                    <a className={`nav-link ${page == "classes" && "active"}`} href="#" onClick={() => { go("classes") }}>Classes</a>
+                    <a className={`nav-link ${page == "faculties" && "active"}`} href="#" onClick={() => { go("faculties") }}>Faculties</a>
+                    <a className={`nav-link ${page == "subjects" && "active"}`} href="#" onClick={() => { go("subjects") }}>Subjects</a>
+                    <a className={`nav-link ${page == "timetable" && "active"}`} href="#" onClick={() => { go("timetable") }}>Timetable</a>
                 </div>
-            </nav>
-            <div style={{ height: "100% " }}>
-                <Outlet />
             </div>
-        </div>
+        </nav >
     )
 }
 

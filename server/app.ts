@@ -13,7 +13,13 @@ app.listen(env?.HTTP_PORT || 3000, () => {
     console.log(`Server listening on PORT ${env?.HTTP_PORT || 3000}`);
 })
 
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: "http://192.168.0.123:5173",
+    allowedHeaders: "Access-Control-Allow-Origin, Authorization, content-type",
+    preflightContinue: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));

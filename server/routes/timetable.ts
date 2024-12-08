@@ -6,25 +6,48 @@ import * as Timetable from "../app/timetable"
 
 import { authMiddleware } from "../app/auth"
 import path from "path"
-import { pathValidate } from "../app/validate"
-import { TIMEOUT } from "dns"
+import { timetableReq } from "../app/validate"
 
 const router = Router()
 
 
 Timetable
 
-router.get("/:name", authMiddleware, (req, res) => {
+
+router.put("/assign", authMiddleware, (req, res) => {
     try {
-        const { error: validationError, value } = pathValidate.validate(req.params)
+        const { error: validationError, value } = timetableReq.assign.validate(req.body)
         if (validationError) {
-            res.json({ error: validationError })
+            res.status(StatusCodes.BAD_REQUEST).json({ validationError })
             return
         }
-        res.json({})
-    } catch (err) {
-        console.log(err);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err)
+        const { error, status } = Timetable.assign(path.join(req.user?.id + "", value.name), value.classId, value.day, value.hour, value.subjectId);
+        if (error) {
+            res.json({ error })
+            return
+        }
+        res.json({ status })
+    }
+    catch (err) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: err })
+    }
+})
+router.delete("/assign", authMiddleware, (req, res) => {
+    try {
+        const { error: validationError, value } = timetableReq.unassign.validate(req.body)
+        if (validationError) {
+            res.status(StatusCodes.BAD_REQUEST).json({ validationError })
+            return
+        }
+        const { error, status } = Timetable.unassign(path.join(req.user?.id + "", value.name), value.classId, value.day, value.hour)
+        if (error) {
+            res.status(StatusCodes.NOT_MODIFIED).json({ error })
+            return
+        }
+        res.json({ status })
+    }
+    catch (err) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: err })
     }
 })
 

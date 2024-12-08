@@ -102,3 +102,20 @@ export const subjectReq = {
     }).or("consecutive", "hoursPerWeek", "name", "priority", "before", "after")
 
 }
+
+
+export const timetableReq = {
+    assign: Joi.object({
+        name: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{2,30}$')).required().trim(),
+        day: Joi.number().required(),
+        hour: Joi.number().required(),
+        classId: Joi.number().required(),
+        subjectId: Joi.number().required()
+    }),
+    unassign: Joi.object({
+        name: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{2,30}$')).required().trim(),
+        day: Joi.number().required(),
+        hour: Joi.number().required(),
+        classId: Joi.number().required(),
+    })
+}

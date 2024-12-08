@@ -1,3 +1,4 @@
+import colors from "tailwindcss/colors"
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -13,7 +14,8 @@ export default {
       secondary: "#D7CEB2",
       tertiory: "#93A8AC",
       khaki: "#A59E8C",
-      dimgrey: "#66635B"
+      dimgrey: "#66635B",
+      ...colors
     }
   },
   plugins: [],

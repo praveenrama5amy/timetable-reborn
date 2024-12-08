@@ -1,10 +1,17 @@
 import axios from "axios"
 
+
+const url = `${location.protocol}//${location.hostname}`
+
+const apiPort = 3000
+
+
 const Axios = axios.create({
-    baseURL: "http://localhost:3000",
-    headers: {
-        Authorization: "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlByYXZlZW4gUiIsImVtYWlsIjoicHJhdmVlbnJhbWFzYW15MTIzQGdtYWlsLmNvbSIsImF2YXRhciI6bnVsbCwiaWF0IjoxNzMxODQxMzU2LCJleHAiOjE3MzI3MDUzNTZ9.SC7etfl8PRFU5AhmQEy5sNOLFWXHHLbdYrAMS3aO6AtXfC0yHEFSFNqYpa2eKhTFP7bSflphN3oiYyHFt1af4P58-a2wKQTwRxXUdwoLgdfe58EObZS06QJl5BxQncqomztNTwMRamnyZp1-45Oh1ewJ5A7n0tfjoeV_GLse6Zw4AwKE0l2JJ-9Se_J12XFoMGxwsn6ngV_gQpnnS4MBV7UYfl9LDFHySvbYwOiZLHCKHTE2jzYCP29_fa8LETMuX33GVfgq4eOhLMbHyhwhtMYxMF8YERbMpIPiDnAe6DtkL1Ie8KjqZL0SOJiEh6Xe1Dt44Uq-muK8M3S7eKBUuQ"
-    }
+    baseURL: `${url}:${apiPort}`,
+})
+
+export const AxiosPrivate = axios.create({
+    baseURL: `${url}:${apiPort}`,
 })
 
 export default Axios

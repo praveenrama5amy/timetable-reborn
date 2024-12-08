@@ -9,6 +9,9 @@ const assign = (dir: string, classId: ClassType['id'], day: number, hour: number
     if (deptError) return { error: deptError }
     const room = department.classes.find(room => room.id == classId)
     if (room == null) return { error: { name: "ClassNotFound", message: "requested class not found" } }
+    //Unassign if already assigned
+    if (room.timetable[day][hour] != null) unassign(dir, room.id, day, hour)
+    //check whether the subject is assigned to the class
     const subject = department.subjects.find(subject => subject.id == subjectId)
     if (subject == null) return { error: { name: "SubjectNotFound", message: "requested subject not found" } }
     const assignedSubject = room.subjects.find(sub => sub.subject == subjectId)
@@ -36,21 +39,22 @@ const unassign = (dir: string, classId: ClassType['id'], day?: number | null, ho
         for (let i = day || 0; i <= (day != null ? day : department.classes[classIndex].timetable.length - 1); i++) {
             for (let j = hour || 0; j <= (hour != null ? hour : department.classes[classIndex].timetable[i].length - 1); j++) {
                 const subjectId = department.classes[classIndex].timetable[i][j]
-                // if (subjectId == null) return { status: { success: true, message: "timetable updated" } }
                 if (subjectId == null) continue;
                 department.classes[classIndex].timetable[i][j] = null
-
                 const subjectFaculties = department.classes[classIndex].subjects.find(sub => sub.subject == subjectId)?.faculties
-                department.faculties.forEach((faculty, i) => {
+                department.faculties.forEach((faculty, k) => {
                     if (!subjectFaculties?.includes(faculty.id)) return
-                    department.faculties[i].timetable[i][j] = null
+                    department.faculties[k].timetable[i][j] = null
+
                 })
             }
         }
         Department.set(dir, { classes: department.classes, faculties: department.faculties })
         return { status: { success: true, message: "timetable updated" } }
     } catch (err) {
+
         console.log(err);
+        return { error: err }
 
     }
 }
@@ -149,7 +153,7 @@ const getBestSubForTheHour = (dir: string, classId: ClassType['id'], day: number
         }, 0)
         return [sub[0], sub[1] + facultiesMeanPriority]
     })
-    return finalPriority.sort((a, b) => b[1] - a[1])
+    return { priority: finalPriority.sort((a, b) => b[1] - a[1]) }
 
 
 }
@@ -161,14 +165,23 @@ const autoGenerate = (dir: string) => {
     for (const room of department.classes) {
         for (let i = 0; i < room.daysPerWeek; i++) {
             for (let j = 0; j < room.hoursPerDay; j++) {
-                const finalPriority = getBestSubForTheHour(dir, room.id, i, j)
-                return finalPriority
+                const { error, priority: finalPriority } = getBestSubForTheHour(dir, room.id, i, j)
+                if (error) return { error }
+                let k = 0;
+                do {
+                    console.log(`i : ${i} , j : ${j} , k : ${k}`);
+                    console.log(finalPriority[k]);
+                    var { error: assignmentError, status } = assign(dir, room.id, i, j, finalPriority[k][0])
+                    console.log(assignmentError);
+
+
+                    k++;
+                } while (assignmentError != null && finalPriority[k] != null)
             }
         }
     }
 
 }
-console.log(autoGenerate("1/mca"));
 
 export {
     assign,

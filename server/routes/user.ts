@@ -8,7 +8,7 @@ import { authMiddleware } from "../app/auth"
 const router = Router()
 
 router.get("/me", authMiddleware, (req, res) => {
-    res.json(req.user)
+    res.json({ user: req.user })
 })
 
 
