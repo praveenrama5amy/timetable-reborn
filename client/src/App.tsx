@@ -5,7 +5,7 @@ import useAppData from "./hooks/useAppData"
 import Nav from "./pages/Nav"
 import Loading from "./pages/Loading/Loading"
 
-const minLoadingTime = 10
+const minLoadingTime = 5000
 
 const App = () => {
 

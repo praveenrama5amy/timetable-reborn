@@ -25,14 +25,15 @@ const create = (dir: string, subject: { name: SubjectType['name'], consecutive: 
     }
     if (department.subjects.find(e => e.name == subject.name)) return { error: { name: "SubjectCreationFailed", message: "subject already exists" } }
     const id = Date.now()
-    department.subjects.push({
+    const sub = {
         id,
         after: 0,
         before: 0,
         ...subject,
-    })
+    }
+    department.subjects.push(sub)
     Department.set(dir, { subjects: department.subjects })
-    return { status: { success: true, message: "subject created", id } }
+    return { status: { success: true, message: "subject created", id, subject: sub } }
 }
 
 const edit = (dir: string, subject: { id: SubjectType['id'], name?: SubjectType['name'], consecutive?: SubjectType['consecutive'], hoursPerWeek?: SubjectType['hoursPerWeek'], priority: SubjectType['priority'], before: SubjectType['before'], after: SubjectType['after'] }) => {
@@ -62,7 +63,7 @@ const edit = (dir: string, subject: { id: SubjectType['id'], name?: SubjectType[
         after: subject.after || e.after || 0,
     } : e)
     Department.set(dir, { subjects: department.subjects })
-    return { status: { success: true, message: "subject edited" } }
+    return { status: { success: true, message: "subject edited", subject: department.subjects.find(e => e.id == subject.id) } }
 }
 
 const remove = (dir: string, subjectId: SubjectType['id']) => {
@@ -78,7 +79,6 @@ const remove = (dir: string, subjectId: SubjectType['id']) => {
     return { status: { success: true, message: "subject removed" } }
 }
 
-remove("1/mca", 1732644283299)
 
 
 

@@ -120,6 +120,8 @@ const Faculties = () => {
             errorRef.current!.innerHTML = ""
             try {
                 const res = await Faculty.edit(editId, { ...data })
+                console.log(res.data);
+
                 if (res.error) {
                     errorRef.current!.innerHTML = res.error.message
                 }
@@ -131,6 +133,7 @@ const Faculties = () => {
                     })
                 }
             }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (err: any) {
                 errorRef.current!.innerHTML = err.response.data.error.message || ""
             }

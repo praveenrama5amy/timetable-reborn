@@ -5,7 +5,14 @@ import useAxiosPrivate from "./useAxiosPrivate"
 const useSubject = () => {
     const axiosPrivate = useAxiosPrivate()
     const [profile] = useAppData().profile
-    const add = async (subject: { name: SubjectType['name'], hoursPerWeek: SubjectType['hoursPerWeek'], consecutive: SubjectType['consecutive'], priority: SubjectType['priority'], before: SubjectType['before'], after?: SubjectType['after'] }) => {
+    const add = async (subject: {
+        name: SubjectType['name'],
+        hoursPerWeek: SubjectType['hoursPerWeek'],
+        consecutive: SubjectType['consecutive'],
+        priority: SubjectType['priority'],
+        before?: SubjectType['before'],
+        after?: SubjectType['after']
+    }) => {
         const res = await axiosPrivate.post("/subject/", { department: profile, subject })
         return res.data
     }
