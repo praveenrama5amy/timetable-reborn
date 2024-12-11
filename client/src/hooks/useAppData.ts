@@ -20,7 +20,7 @@ const useAppData = () => {
     const fetchDepatment = async (name: string) => {
         try {
             const res = await axiosPrivate.get(`/department/${name}`)
-            department[1](res.data.department || [])
+            department[1](res.data.department || null)
             return res.data.department
         }
         catch (err) {

@@ -80,6 +80,7 @@ interface AppDataContext {
 }
 
 
+
 const AppDataContext = createContext<AppDataContext>({
     loading: [true, () => { return null }],
     profile: ["", () => { return null }],
@@ -104,8 +105,14 @@ const AppDataProvider = ({ children }: { children: ReactNode }) => {
         profile[1](localStorage.getItem("profileSelected"))
     }, [])
     useEffect(() => {
+        console.log("Profile Switched");
         profile[0] != null && localStorage.setItem("profileSelected", profile[0])
     }, [profile[0]])
+    useEffect(() => {
+        console.log(department[0]);
+
+
+    }, [department[0]])
 
     return <AppDataContext.Provider value={{
         loading,

@@ -18,7 +18,7 @@ const Nav = () => {
 
 
     return (
-        <nav className="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+        <nav className="navbar bg-dark border-bottom border-body fixed w-100 z-20" data-bs-theme="dark">
             <div className="container-fluid">
                 <div className="navbar-nav flex flex-row me-auto gap-3 w-100">
                     <li className="nav-item dropdown">

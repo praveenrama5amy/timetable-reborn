@@ -1,11 +1,10 @@
 import { useRef, useState } from "react"
 import LoadBar from "../components/LoadBar"
-import useAppData from "../hooks/useAppData"
-import { FacultyType } from "../context/AppDataContext"
+import { FacultyType, useAppDataContext } from "../context/AppDataContext"
 import useFaculty from "../hooks/useFaculty"
 
 const Faculties = () => {
-    const [department, setDepartment] = useAppData().department
+    const [department, setDepartment] = useAppDataContext().department
     const nameRef = useRef<HTMLInputElement>(null)
     const minRef = useRef<HTMLInputElement>(null)
     const maxRef = useRef<HTMLInputElement>(null)
@@ -65,6 +64,7 @@ const Faculties = () => {
             }
         },
         remove: async (id: FacultyType['id']) => {
+            if (confirm("Are you sure?") == false) return
             const res = await Faculty.remove(id)
             if (res.status && res.status.success) {
                 setDepartment(prev => (prev != null ? { ...prev, faculties: prev.faculties.filter(e => e.id != id) } : null))
@@ -74,6 +74,8 @@ const Faculties = () => {
             }
         },
         editBtnPress: (id: FacultyType['id']) => {
+            console.log("here");
+
             const faculty = department!.faculties.find(e => e.id == id)
             setEditId(id)
             nameRef.current!.value = faculty!.name;
@@ -134,10 +136,17 @@ const Faculties = () => {
             }
         }
     }
+    const clearAllFormFields = () => {
+        setEditId(null)
+        nameRef.current!.value = ``
+        minRef.current!.value = ``
+        maxRef.current!.value = ``
+    }
+
     return (
         <div className="h-100">
             <p className="text-4xl text-center font-medium">Faculties</p>
-            <button type="button" className="btn btn btn-dark block ml-auto mr-[10%]" data-bs-toggle="modal" data-bs-target="#newFacultyModal" onClick={() => { setEditId(null) }}>Add</button>
+            <button type="button" className="btn btn btn-dark block ml-auto mr-[10%]" data-bs-toggle="modal" data-bs-target="#newFacultyModal" onClick={() => { clearAllFormFields() }}>Add</button>
             <div className="container flex gap-5 flex-col">
                 {department?.faculties.map(faculty =>
                     <div key={faculty.id} className="bg-white rounded-lg shadow-md flex p-4">
@@ -151,7 +160,7 @@ const Faculties = () => {
                         </div>
                         <div className="flex flex-col ml-3">
                             <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
-                                <button type="button" className="btn btn-primary"><i className="bi bi-pencil" onClick={() => { handle.editBtnPress(faculty.id) }} data-bs-toggle="modal" data-bs-target="#newFacultyModal"></i></button>
+                                <button type="button" className="btn btn-primary" onClick={() => { handle.editBtnPress(faculty.id) }} data-bs-toggle="modal" data-bs-target="#newFacultyModal"><i className="bi bi-pencil" ></i></button>
                                 <button type="button" className="btn btn-danger" onClick={() => { handle.remove(faculty.id) }}><i className="bi bi-trash"></i></button>
                             </div>
                         </div>

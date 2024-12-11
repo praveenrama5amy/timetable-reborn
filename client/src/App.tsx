@@ -31,7 +31,6 @@ const App = () => {
       setTimeout(() => {
         loading[1](false);
       }, minLoadingTime - (performance.now() - now))
-
     })()
   }, [profileSelected])
 
@@ -40,7 +39,7 @@ const App = () => {
   return (
     <div style={{ height: "100%" }}>
       <Nav />
-      <div style={{ height: "100% " }}>
+      <div style={{ height: "100% ", paddingTop: "70px" }}>
         <Outlet />
       </div>
     </div >
