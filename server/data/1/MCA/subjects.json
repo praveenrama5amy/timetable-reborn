@@ -1,1 +1,119 @@
-[{"id":1732985143227,"name":"Web Technology","consecutive":1,"hoursPerWeek":3,"priority":2,"before":1,"after":9},{"id":1732986851196,"after":0,"before":0,"name":"C","hoursPerWeek":3,"consecutive":1,"priority":3},{"id":1732986870703,"after":0,"before":0,"name":"DBMS","hoursPerWeek":3,"consecutive":1,"priority":4},{"id":1732986894595,"after":0,"before":0,"name":"MATHS","hoursPerWeek":4,"consecutive":1,"priority":4},{"id":1732986938434,"after":0,"before":0,"name":"DSA","hoursPerWeek":3,"consecutive":1,"priority":3},{"id":1732986964502,"after":0,"before":0,"name":"DBMS LAB","hoursPerWeek":2,"consecutive":2,"priority":3},{"id":1732986996152,"name":"WEB LAB","consecutive":2,"hoursPerWeek":4,"priority":2,"before":0,"after":0},{"id":1732987007558,"after":0,"before":0,"name":"C LAB","hoursPerWeek":4,"consecutive":2,"priority":3},{"id":1732987036003,"after":0,"before":0,"name":"DSA LAB","hoursPerWeek":4,"consecutive":2,"priority":3},{"id":1733037683065,"after":0,"before":0,"name":"LIB","hoursPerWeek":1,"consecutive":1,"priority":1},{"id":1733037709505,"after":0,"before":0,"name":"TWM","hoursPerWeek":1,"consecutive":1,"priority":1},{"id":1733037721584,"after":0,"before":0,"name":"FREE","hoursPerWeek":3,"consecutive":1,"priority":1},{"id":1733914569490,"name":"EVS","consecutive":1,"hoursPerWeek":2,"priority":1,"before":0,"after":0}]
+[
+  {
+    "id": 1732985143227,
+    "name": "Web Technology",
+    "consecutive": 1,
+    "hoursPerWeek": 3,
+    "priority": 2,
+    "before": 1,
+    "after": 9
+  },
+  {
+    "id": 1732986851196,
+    "after": 0,
+    "before": 0,
+    "name": "C",
+    "hoursPerWeek": 3,
+    "consecutive": 1,
+    "priority": 3
+  },
+  {
+    "id": 1732986870703,
+    "after": 0,
+    "before": 0,
+    "name": "DBMS",
+    "hoursPerWeek": 3,
+    "consecutive": 1,
+    "priority": 4
+  },
+  {
+    "id": 1732986894595,
+    "after": 0,
+    "before": 0,
+    "name": "MATHS",
+    "hoursPerWeek": 4,
+    "consecutive": 1,
+    "priority": 4
+  },
+  {
+    "id": 1732986938434,
+    "after": 0,
+    "before": 0,
+    "name": "DSA",
+    "hoursPerWeek": 3,
+    "consecutive": 1,
+    "priority": 3
+  },
+  {
+    "id": 1732986964502,
+    "after": 0,
+    "before": 0,
+    "name": "DBMS LAB",
+    "hoursPerWeek": 2,
+    "consecutive": 2,
+    "priority": 3
+  },
+  {
+    "id": 1732986996152,
+    "name": "WEB LAB",
+    "consecutive": 2,
+    "hoursPerWeek": 4,
+    "priority": 2,
+    "before": 0,
+    "after": 0
+  },
+  {
+    "id": 1732987007558,
+    "after": 0,
+    "before": 0,
+    "name": "C LAB",
+    "hoursPerWeek": 4,
+    "consecutive": 2,
+    "priority": 3
+  },
+  {
+    "id": 1732987036003,
+    "after": 0,
+    "before": 0,
+    "name": "DSA LAB",
+    "hoursPerWeek": 4,
+    "consecutive": 2,
+    "priority": 3
+  },
+  {
+    "id": 1733037683065,
+    "after": 0,
+    "before": 0,
+    "name": "LIB",
+    "hoursPerWeek": 1,
+    "consecutive": 1,
+    "priority": 1
+  },
+  {
+    "id": 1733037709505,
+    "after": 0,
+    "before": 0,
+    "name": "TWM",
+    "hoursPerWeek": 1,
+    "consecutive": 1,
+    "priority": 1
+  },
+  {
+    "id": 1733037721584,
+    "after": 0,
+    "before": 0,
+    "name": "FREE",
+    "hoursPerWeek": 3,
+    "consecutive": 1,
+    "priority": 1
+  },
+  {
+    "id": 1733928053133,
+    "after": 0,
+    "before": 0,
+    "name": "EVS",
+    "hoursPerWeek": 4,
+    "priority": 1,
+    "consecutive": 1
+  }
+]

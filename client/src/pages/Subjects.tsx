@@ -3,7 +3,8 @@ import { useRef, useState } from "react"
 import { FacultyType, useAppDataContext } from "../context/AppDataContext"
 import useSubject from "../hooks/useSubject"
 
-const Faculties = () => {
+
+const Subject = () => {
     const [department, setDepartment] = useAppDataContext().department
     const nameRef = useRef<HTMLInputElement>(null)
     const hoursPerWeekRef = useRef<HTMLInputElement>(null)
@@ -49,13 +50,7 @@ const Faculties = () => {
                 }, 5000)
                 return
             }
-            // if (data.min > data.max) {
-            //     errorRef.current!.innerText = "Min can't be greater than max"
-            //     setTimeout(() => {
-            //         errorRef.current!.innerText = ""
-            //     }, 5000)
-            //     return
-            // }
+
             errorRef.current!.innerHTML = ""
             try {
                 const res = await Subject.add(data)
@@ -66,7 +61,7 @@ const Faculties = () => {
                     setDepartment(prev => {
                         return prev != null ? { ...prev, subjects: [...prev.subjects, res.status.subject] } : null
                     })
-                    alert("Added")
+                    dismissModal()
                 }
             }
             catch (err) {
@@ -136,7 +131,7 @@ const Faculties = () => {
                 }
                 if (res.status && res.status.success) {
                     console.log(res.status);
-
+                    dismissModal()
                     setDepartment(prev => {
                         return prev != null ? { ...prev, subjects: prev.subjects.map(e => e.id != editId ? e : res.status.subject) } : null
                     })
@@ -147,6 +142,11 @@ const Faculties = () => {
                 errorRef.current!.innerHTML = err.response.data.error.message || ""
             }
         }
+    }
+    const dismissModal = () => {
+        const modalDismissBtn = document.getElementById("modalDismissBtn")
+        modalDismissBtn?.click()
+
     }
     const clearAllFormFields = () => {
         setEditId(null)
@@ -189,7 +189,7 @@ const Faculties = () => {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h1 className="modal-title fs-5" id="newFacultyModalLabel">{editId ? "Edit Faculty" : "New Faculty"}</h1>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modalDismissBtn"></button>
                             </div>
                             <div className="modal-body">
                                 {editId &&
@@ -234,4 +234,4 @@ const Faculties = () => {
     )
 }
 
-export default Faculties
+export default Subject

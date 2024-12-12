@@ -1,7 +1,6 @@
 import { SubjectType } from "../types/interface"
 
 import * as Department from "./department"
-
 const create = (dir: string, subject: { name: SubjectType['name'], consecutive: SubjectType['consecutive'], hoursPerWeek: SubjectType['hoursPerWeek'], priority: SubjectType['priority'], before?: SubjectType['before'], after?: SubjectType['after'] }) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }

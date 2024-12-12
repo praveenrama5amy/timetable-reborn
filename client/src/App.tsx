@@ -4,14 +4,16 @@ import useAuth from "./hooks/useAuth"
 import useAppData from "./hooks/useAppData"
 import Nav from "./pages/Nav"
 import Loading from "./pages/Loading/Loading"
+import useConflict from "./hooks/useConflict"
 
-const minLoadingTime = 5000
+const minLoadingTime = 5
 
 const App = () => {
 
   const { fetchDepatments, fetchDepatment, loading } = useAppData()
   const [profileSelected] = useAppData().profile
   useAuth()
+  useConflict()
 
   useEffect(() => {
     (async () => {

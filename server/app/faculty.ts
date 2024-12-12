@@ -20,12 +20,11 @@ const edit = (dir: string, faculty: { id: FacultyType['id'], name?: FacultyType[
     if (department.faculties.find(e => e.name == faculty.name && e.id != faculty.id)) return { error: { name: "FacultyEditedFailed", message: "faculty name provided already exists" } }
     department.faculties = department.faculties.map(e => e.id == faculty.id ? {
         ...e,
-        faculty
+        ...faculty
     } : e)
     Department.set(dir, { faculties: department.faculties })
     return { status: { success: true, message: "faculty edited", faculty: department.faculties.find(e => e.id == faculty.id) } }
 }
-edit("1/MCA", { id: 1732895352278, name: "Kalyani", busy: [] })
 const remove = (dir: string, facultyId: FacultyType['id']) => {
     const { error, department } = Department.get(dir)
     if (error) return { error }

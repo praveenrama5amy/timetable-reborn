@@ -56,7 +56,7 @@ const Faculties = () => {
                     setDepartment(prev => {
                         return prev != null ? { ...prev, faculties: [...prev.faculties, res.status.faculty] } : null
                     })
-                    alert("Added")
+                    dismissModal()
                 }
             }
             catch (err) {
@@ -120,14 +120,11 @@ const Faculties = () => {
             errorRef.current!.innerHTML = ""
             try {
                 const res = await Faculty.edit(editId, { ...data })
-                console.log(res.data);
-
                 if (res.error) {
                     errorRef.current!.innerHTML = res.error.message
                 }
                 if (res.status && res.status.success) {
-                    console.log(res.status);
-
+                    dismissModal()
                     setDepartment(prev => {
                         return prev != null ? { ...prev, faculties: prev.faculties.map(e => e.id != editId ? e : res.status.faculty) } : null
                     })
@@ -145,7 +142,23 @@ const Faculties = () => {
         minRef.current!.value = ``
         maxRef.current!.value = ``
     }
-
+    const dismissModal = () => {
+        const modalDismissBtn = document.getElementById("modalDismissBtn")
+        modalDismissBtn?.click()
+    }
+    const getTentativeFacultyAllotmentCount = (facultyId: FacultyType['id']) => {
+        let count = 0
+        department?.classes.forEach(room => {
+            room.subjects.forEach(sub => {
+                if (sub.faculties.includes(facultyId)) {
+                    const s = department.subjects.find(e => e.id == sub.subject)
+                    if (s == null) return
+                    count += s.hoursPerWeek
+                }
+            })
+        })
+        return count
+    }
     return (
         <div className="h-100">
             <p className="text-4xl text-center font-medium">Faculties</p>
@@ -159,7 +172,7 @@ const Faculties = () => {
                                 <p>Min : {faculty.min}</p>
                                 <p className="ml-auto">Max : {faculty.max}</p>
                             </div>
-                            <LoadBar max={faculty.max} min={faculty.min} value={faculty.timetable.flat().filter(e => e != null).length} />
+                            <LoadBar max={faculty.max} min={faculty.min} value={getTentativeFacultyAllotmentCount(faculty.id)} />
                         </div>
                         <div className="flex flex-col ml-3">
                             <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
@@ -176,7 +189,7 @@ const Faculties = () => {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h1 className="modal-title fs-5" id="newFacultyModalLabel">{editId ? "Edit Faculty" : "New Faculty"}</h1>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" className="btn-close" id="modalDismissBtn" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
                                 {editId &&

@@ -85,6 +85,24 @@ router.delete("/", authMiddleware, (req, res) => {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err)
     }
 })
+router.put("/subject/faculty", authMiddleware, (req, res) => {
+    try {
+        const { error: validationError, value } = classReq.addSubject.validate(req.body)
+        if (validationError) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: "ValidationError", message: validationError.message })
+            return
+        }
+        const { error, status } = Class.editSubjectFaculty(path.join(req.user?.id + "", value.department), value.classId, value.subjectId, value.facultyIds)
+        if (error) {
+            res.json({ error })
+            return
+        }
+        res.json({ status })
+    } catch (err) {
+        console.log(err);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err)
+    }
+})
 router.delete("/subject", authMiddleware, (req, res) => {
     try {
         const { error: validationError, value } = classReq.removeSubject.validate(req.body)
