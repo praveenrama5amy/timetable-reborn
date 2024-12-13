@@ -16,7 +16,7 @@ app.listen(env?.HTTP_PORT || 3000, () => {
 app.use(cors({
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    origin: "http://192.168.0.123:5173",
+    origin: "http://localhost:5173",
     allowedHeaders: "Access-Control-Allow-Origin, Authorization, content-type",
     preflightContinue: true
 }));

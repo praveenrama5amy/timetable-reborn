@@ -1,11 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react"
 import useConflict from "../hooks/useConflict"
-import { ConflictInterface } from "../context/AppDataContext"
+import { ClassType, ConflictInterface, useAppDataContext } from "../context/AppDataContext"
 import "../css/Timetable.css"
+import { useNavigate } from "react-router"
 
 const Timetable = () => {
     const Conflict = useConflict()
     const [conflicts, setConflicts] = useState<ConflictInterface[]>([])
+    const [department] = useAppDataContext().department
+    const navigate = useNavigate()
+    const [classSelected] = useState<ClassType['id'] | undefined | null>(department?.classes[0]?.id)
     useEffect(() => {
         Conflict.getConflict().then(res => {
             if (res.conflicts) {
@@ -13,6 +18,10 @@ const Timetable = () => {
             }
         })
     }, [])
+    if (department == null) return;
+    if (department.classes.length == 0) return navigate("/classes");
+    const timetable = department.classes.find(e => e.id == classSelected)?.timetable
+    if (timetable == null) return
     if (conflicts.length > 0) return <div className="h-100">
         <p className="text-4xl text-center font-medium">Conflicts</p>
         <p className="mt-10 ml-5 text-lg font-medium text-red-500">There is some conflict in the given inputs. Correct the conflicts to proceed further</p>
@@ -35,27 +44,29 @@ const Timetable = () => {
     return (
         <div>
             <p className="text-3xl font-medium text-center">Timetable</p>
-            <div className="border-2 border-black  rounded-lg m-10 flex flex-col">
-                <div className="flex flex-row border-b-2 p-4 border-primary">
-                    <p className="font-bold text-lg text-center flex-1">Day/Hour</p>
-                    {/* <p className="font-bold text-lg text-center flex-1">Day/Hour</p> */}
-                </div>
-                <div className="flex flex-row border-b-2 p-4 border-primary">
-                    <p className="font-bold text-lg text-center flex-1">Day 1</p>
-                </div>
+            <div className="container text-center">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            {timetable[0].map((_, i) =>
+                                <th scope="col" key={i}>{i + 1}</th>
+                            )}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {timetable.map((day, i) =>
+                            <tr key={i}>
+                                <th scope="row">{i + 1}</th>
+                                {day.map(hour =>
+                                    <td key={hour}>{hour}</td>
+                                )}
+
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
-            <table className="border-2 border-black">
-                <thead>
-                    <tr>
-                        <th>Day/Hour</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     )
 }
