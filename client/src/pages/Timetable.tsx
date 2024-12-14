@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react"
 import useConflict from "../hooks/useConflict"
-import { ClassType, ConflictInterface, useAppDataContext } from "../context/AppDataContext"
+import { ClassType, ConflictInterface, SubjectType, useAppDataContext } from "../context/AppDataContext"
 import "../css/Timetable.css"
 import { useNavigate } from "react-router"
 
@@ -18,6 +18,12 @@ const Timetable = () => {
             }
         })
     }, [])
+    const subjectsHash: { [key: SubjectType['id']]: SubjectType } = {}
+    department?.subjects.forEach(sub => {
+        subjectsHash[sub.id] = sub
+    })
+    console.log(subjectsHash);
+
     if (department == null) return;
     if (department.classes.length == 0) return navigate("/classes");
     const timetable = department.classes.find(e => e.id == classSelected)?.timetable
@@ -58,8 +64,8 @@ const Timetable = () => {
                         {timetable.map((day, i) =>
                             <tr key={i}>
                                 <th scope="row">{i + 1}</th>
-                                {day.map(hour =>
-                                    <td key={hour}>{hour}</td>
+                                {day.map((hour, j) =>
+                                    <td key={i + "" + j}>{hour ? subjectsHash[hour].name : hour}</td>
                                 )}
 
                             </tr>
