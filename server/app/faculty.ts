@@ -10,6 +10,7 @@ const create = (dir: string, faculty: { name: FacultyType['name'], min: FacultyT
     const facult = { id, ...faculty, busy: faculty.busy || [[]], timetable: [] }
     department.faculties.push(facult)
     Department.set(dir, { faculties: department.faculties })
+    initializeFacultyTimetable(dir, id)
     return { status: { success: true, message: "faculty created", id, faculty: facult } }
 }
 
@@ -23,6 +24,7 @@ const edit = (dir: string, faculty: { id: FacultyType['id'], name?: FacultyType[
         ...faculty
     } : e)
     Department.set(dir, { faculties: department.faculties })
+    initializeFacultyTimetable(dir, faculty.id)
     return { status: { success: true, message: "faculty edited", faculty: department.faculties.find(e => e.id == faculty.id) } }
 }
 const remove = (dir: string, facultyId: FacultyType['id']) => {

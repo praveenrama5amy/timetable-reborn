@@ -14,3 +14,48 @@ body,
   box-sizing: border-box;
   margin: 0;
 }
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.no-scroll {
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+tr {
+  height: 1px;
+}
+td {
+  height: inherit;
+}
+td > div {
+  position: relative;
+  height: 100%;
+}

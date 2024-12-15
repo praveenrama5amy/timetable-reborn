@@ -14,7 +14,10 @@ const useTimetable = () => {
         const res = await axiosPrivate.delete("/timetable/assign", { data: { name: profile, classId, day, hour } })
         return res.data
     }
-    return { assign, unassign }
+    const autoGenerate = (data: { classId: ClassType['id'], day: number, hour: number }[]) => {
+        return axiosPrivate.put("/timetable/autogenerate", { name: profile, hours: data })
+    }
+    return { assign, unassign, autoGenerate }
 }
 
 export default useTimetable

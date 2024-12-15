@@ -52,4 +52,22 @@ router.delete("/assign", authMiddleware, (req, res) => {
 })
 
 
+router.put("/autogenerate", authMiddleware, (req, res) => {
+    try {
+        // const { error: validationError, value } = timetableReq.unassign.validate(req.body)
+        // if (validationError) {
+        //     res.status(StatusCodes.BAD_REQUEST).json({ validationError })
+        //     return
+        // }
+        const r = Timetable.autoGenerate(path.join(req.user?.id + "", req.body.name), req.body.hours)
+
+        res.json(r)
+    }
+    catch (err) {
+        console.log(err);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: err })
+    }
+})
+
+
 export default router
