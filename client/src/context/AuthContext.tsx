@@ -36,7 +36,7 @@ export const useAuthContext = () => {
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
     const user = useState<AuthContext['user'][0]>(null);
-    const token = useState<AuthContext['token'][0]>("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJQcmF2ZWVuIiwiZW1haWwiOiJwcmF2ZWVucmFtYXNhbXkxMjNAZ21haWwuY29tIiwiYXZhdGFyIjoiIiwiaWF0IjoxNzMzNjQ5Mjg5LCJleHAiOjE3MzQ1MTMyODl9.LAod7w76zjz9_X2e3iaE1DVTWdWy1jD2hQqakj4r4S3GtIGqy-07Ukaa5__2dC_vZTMWq3cXjbf8DWqlR6lauH_NhWwAkO_QGf-Y_yPBrbLQvYhENA_WNvxjNGgveI-gIKPzFCjNtk2n90i37jS0Re3gcqiqaRYScslq78bC5SD-FGNaeTwlwqz8EHxnId8fCS2CvXrWRSukn_F8ckCqXH83TqKwa5wFlo64r1Hx3d8hnWQKtpRtaVVn08KAM5ZqeCosNJ6EWpEL45jHfqfQoCXoHsA52eXu_nayAtCe0h8Ul22YH10JmvOSkRNAnXCXeykptjkHjOaysIzNbti-ew");
+    const token = useState<AuthContext['token'][0]>("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJQcmF2ZWVuIiwiZW1haWwiOiJwcmF2ZWVucmFtYXNhbXkxMjNAZ21haWwuY29tIiwiYXZhdGFyIjoiIiwiaWF0IjoxNzM0NTQ1MjU1fQ.ZnEQlbYefKQ7mMHCyP3kTaSb6wXArB5kXSBNvDpse8p9M2P4-HExiEThVfgTGVLagrt0kCu7IK41FcatUCWR9_DxRwjOfxCVojdd1tlQ7zx0rk-1B68l71n_hFlckO5pGGCfnEL6QI2HKyA3OywqH7_AfF79aU_jFXB-vYa6tMZ_B9D8UGflAgi2KNeNwadvSBgRnBpW5pvOg39-MDTe8Mye4TIGXjzN53DAhmvMLyjSRUXGg2Yl8Fy6vaKFHswCq5WEEU5smEk6S-7JCwYC_bB53XiuyeJ-Hu_0HgIPaAPxQBEricSmzurJhTwzaKtnIrgF__NXszTlRXOhDWjYlA");
 
 
     return <AuthContext.Provider value={{

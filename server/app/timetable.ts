@@ -2,6 +2,7 @@
 import { ClassType, ConflictInterface, DepartmentInterface, FacultyType, SubjectType } from "../types/interface";
 import * as Department from "./department"
 import * as Faculty from "./faculty"
+import { shuffleArray } from "./tools";
 
 
 const assign = (dir: string, classId: ClassType['id'], day: number, hour: number, subjectId: SubjectType['id']) => {
@@ -130,17 +131,18 @@ const getClassSubjectPriority = (dir: string, classId: ClassType['id'], day?: nu
     room.subjects.forEach(subject => {
         const sub = department.subjects.find(sub => sub.id == subject.subject)
         if (sub == null) return
-        priorities[sub.id] = (sub.hoursPerWeek - (alloted[sub.id] || 0)) * sub.priority
+        priorities[sub.id] = ((sub.hoursPerWeek - (alloted[sub.id] || 0)) * 0.7) * sub.priority
     })
     if (day != null) {
         room.timetable[day].forEach(sub => {
             if (sub == null) return
-            priorities[sub] = priorities[sub!] / 1.5
+            priorities[sub] = priorities[sub!] / 2
         })
     }
+
     if (day != null && hour != null) {
-        if (room.timetable[day][hour - 1] != null) priorities[room.timetable[day][hour - 1]!] /= 2
-        if (room.timetable[day][hour + 1] != null) priorities[room.timetable[day][hour + 1]!] /= 2
+        if (room.timetable[day][hour - 1] != null) priorities[room.timetable[day][hour - 1]!] /= 2.5
+        if (room.timetable[day][hour + 1] != null) priorities[room.timetable[day][hour + 1]!] /= 2.5
     }
     const priority: Array<[SubjectType['id'], number]> = Object.entries(priorities).sort((a, b) => b[1] - a[1]).map(p => { return [Number(p[0]), p[1]] })
     return { priority }
@@ -159,12 +161,14 @@ const getFacultiesPriority = (dir: string, day?: number, hour?: number) => {
         if (alloted[faculty.id] >= faculty.min) priorities[faculty.id] /= 2
 
         const facultyWorkingOnTheDay = day != null ? faculty.timetable[day].filter(e => e != null).length : 0
+        //On same Day
         if (day != null && facultyWorkingOnTheDay != 0) {
-            priorities[faculty.id] /= faculty.timetable[day].filter(e => e != null).length * 1.2
+            priorities[faculty.id] /= faculty.timetable[day].filter(e => e != null).length * 1.4
         }
+        //On consec Hour
         if (day != null && hour != null && facultyWorkingOnTheDay != 0) {
-            if (faculty.timetable[day][hour - 1] != null) priorities[faculty.id] /= 1.2
-            if (faculty.timetable[day][hour + 1] != null) priorities[faculty.id] /= 1.2
+            if (faculty.timetable[day][hour - 1] != null) priorities[faculty.id] /= 1.7
+            if (faculty.timetable[day][hour + 1] != null) priorities[faculty.id] /= 1.7
         }
     })
     const priority: Array<[FacultyType['id'], number]> = Object.entries(priorities).sort((a, b) => b[1] - a[1]).map(p => { return [Number(p[0]), p[1]] })
@@ -191,7 +195,7 @@ const getBestSubForTheHour = (dir: string, classId: ClassType['id'], day: number
     if (subjectPriorityError) return { error: subjectPriorityError }
     const { error: facultyError, priority: facultyPriority } = getFacultiesPriority(dir, day, hour)
     if (facultyError) return { error: facultyError }
-    const finalPriority: [FacultyType['id'], number][] = subjectPriority.map(sub => {
+    let finalPriority: [FacultyType['id'], number][] = subjectPriority.map(sub => {
         const subAssigned = room.subjects.find(e => e.subject == sub[0])
         if (subAssigned == null) return sub
         const facultiesMeanPriority = subAssigned.faculties.reduce((p: number, c: FacultyType['id']) => {
@@ -201,6 +205,7 @@ const getBestSubForTheHour = (dir: string, classId: ClassType['id'], day: number
         }, 0)
         return [sub[0], sub[1] + facultiesMeanPriority]
     })
+    finalPriority = shuffleArray(finalPriority)
     return { priority: finalPriority.sort((a, b) => b[1] - a[1]) }
 
 
@@ -257,6 +262,8 @@ const autoGenerate = (dir: string, hours: Array<{ classId: ClassType['id'], day:
         const hour = hours[i];
         const { error, priority: finalPriority } = getBestSubForTheHour(dir, hour.classId, hour.day, hour.hour)
         if (error) return { error }
+
+
         let k = 0;
         do {
             console.log(`i : ${hour.day} , j : ${hour.hour} , k : ${k}`);

@@ -25,7 +25,7 @@ router.post("/create", authMiddleware, async (req, res) => {
         return
     }
     const department = Department.create(value.name, path.join(req.user!.id + ""))
-    res.json({ status: department })
+    res.json(department)
 })
 
 router.get("/all", authMiddleware, (req, res) => {

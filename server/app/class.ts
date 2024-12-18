@@ -57,7 +57,8 @@ const addSubject = (dir: string, classId: ClassType['id'], subjectId: SubjectTyp
         subjects: [...e.subjects, { subject: subjectId, faculties: facultyIds }]
     })
     Department.set(dir, { classes: department.classes })
-    return { status: { success: true, message: "subject added successfully", class: department.classes.find(e => e.id == classId) } }
+    const room = department.classes.find(e => e.id == classId)
+    return { status: { success: true, message: "subject added successfully", class: room } }
 }
 const editSubjectFaculty = (dir: string, classId: ClassType['id'], subjectId: SubjectType['id'], facultyIds: Array<FacultyType['id']>) => {
     const { error, department } = Department.get(dir)

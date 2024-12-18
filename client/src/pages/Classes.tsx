@@ -130,12 +130,10 @@ const Classes = () => {
                 if (res.error) {
                     errorRef.current!.innerHTML = res.error.message
                 }
-                if (res.status && res.status.success) {
-                    console.log(res.status.class);
+                console.log(res.status);
 
-                    setDepartment(prev => {
-                        return prev != null ? { ...prev, classes: prev.classes.map(e => e.id != editId ? e : res.status.class) } : null
-                    })
+                if (res.status && res.status.success) {
+                    setDepartment(prev => (prev && { ...prev, classes: prev.classes.map(e => e.id == id ? res.status.class : e) }))
                 }
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -151,7 +149,7 @@ const Classes = () => {
                 }
                 if (res.status && res.status.success) {
                     setDepartment(prev => {
-                        return prev != null ? { ...prev, classes: prev.classes.map(e => e.id != editId ? e : res.status.class) } : null
+                        return prev != null ? { ...prev, classes: prev.classes.map(e => e.id != id ? e : res.status.class) } : null
                     })
                 }
             }
@@ -175,39 +173,47 @@ const Classes = () => {
         <div className="h-100">
             <p className="text-4xl text-center font-medium">Classes</p>
             <button type="button" className="btn btn btn-dark block ml-auto mr-[10%]" data-bs-toggle="modal" data-bs-target="#newFacultyModal" onClick={() => { clearAllFormFields() }}>Add</button>
-            <div className="container flex gap-5 flex-col">
-                {department?.classes.map(room =>
-                    <div key={room.id} className="bg-white rounded-lg shadow-md flex p-4">
-                        <div className="flex-1">
-                            <p className="text-lg text-dimgrey font-semibold text-center"> {room.name} <span className="text-khaki text-base font-normal">#{room.id}</span></p>
-                            <p>Days per Week: {room.daysPerWeek}</p>
-                            <p >Hours Per Day : {room.hoursPerDay}</p>
-                            <p className="mt-3 font-medium text-base">Subjects:</p>
-                            <div className="dropdown">
-                                <button className={`btn btn-secondary dropdown-toggle m-3 ${department.subjects.filter(sub => !room.subjects.map(s => s.subject).includes(sub.id)).length == 0 && 'disabled'}`} type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {department.subjects.filter(sub => !room.subjects.map(s => s.subject).includes(sub.id)).length == 0 ?
-                                        "All subject added already" : "Add Subject"
-                                    }
-                                </button>
-                                <ul className="dropdown-menu">
-                                    {department.subjects.filter(sub => !room.subjects.map(s => s.subject).includes(sub.id)).map(sub =>
-                                        <li key={sub.id} onClick={() => { handle.addSubject(room.id, sub.id) }}><a className="dropdown-item" href="#">{sub.name}</a></li>
-                                    )}
-                                </ul>
-                            </div>
-                            <div className="accordion accordion-flush" id="accordionFlushExample">
-                                {room.subjects.map((sub, i) => <Subject classId={room.id} id={sub.subject} key={sub.subject} facultyIds={sub.faculties} i={i + 1} onDeleteBtnPress={() => { handle.removeSubject(room.id, sub.subject) }} />)}
-                            </div>
-                        </div>
-                        <div className="flex flex-col ml-3">
-                            <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
-                                <button type="button" className="btn btn-primary" onClick={() => { handle.editBtnPress(room.id) }} data-bs-toggle="modal" data-bs-target="#newFacultyModal"><i className="bi bi-pencil" ></i></button>
-                                <button type="button" className="btn btn-danger" onClick={() => { handle.remove(room.id) }}><i className="bi bi-trash"></i></button>
-                            </div>
-                        </div>
-
+            <div className="container flex gap-5 flex-col h-100">
+                {department?.classes.length == 0 ?
+                    <div className="flex min-h-80 justify-center items-center text-3xl font-medium">
+                        <i className="bi bi-clipboard2-x"></i>
+                        <p>
+                            No Class Found
+                        </p>
                     </div>
-                )}
+                    :
+                    department?.classes.map(room =>
+                        <div key={room.id} className="bg-white rounded-lg shadow-md flex p-4">
+                            <div className="flex-1">
+                                <p className="text-lg text-dimgrey font-semibold text-center"> {room.name} <span className="text-khaki text-base font-normal">#{room.id}</span></p>
+                                <p>Days per Week: {room.daysPerWeek}</p>
+                                <p >Hours Per Day : {room.hoursPerDay}</p>
+                                <p className="mt-3 font-medium text-base">Subjects:</p>
+                                <div className="dropdown">
+                                    <button className={`btn btn-secondary dropdown-toggle m-3 ${department.subjects.filter(sub => !room.subjects.map(s => s.subject).includes(sub.id)).length == 0 && 'disabled'}`} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {department.subjects.filter(sub => !room.subjects.map(s => s.subject).includes(sub.id)).length == 0 ?
+                                            "All subject added already" : "Add Subject"
+                                        }
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        {department.subjects.filter(sub => !room.subjects.map(s => s.subject).includes(sub.id)).map(sub =>
+                                            <li key={sub.id} onClick={() => { handle.addSubject(room.id, sub.id) }}><a className="dropdown-item" href="#">{sub.name}</a></li>
+                                        )}
+                                    </ul>
+                                </div>
+                                <div className="accordion accordion-flush" id="accordionFlushExample">
+                                    {room.subjects.map((sub, i) => <Subject classId={room.id} id={sub.subject} key={sub.subject} facultyIds={sub.faculties} i={i + 1} onDeleteBtnPress={() => { handle.removeSubject(room.id, sub.subject) }} />)}
+                                </div>
+                            </div>
+                            <div className="flex flex-col ml-3">
+                                <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                    <button type="button" className="btn btn-primary" onClick={() => { handle.editBtnPress(room.id) }} data-bs-toggle="modal" data-bs-target="#newFacultyModal"><i className="bi bi-pencil" ></i></button>
+                                    <button type="button" className="btn btn-danger" onClick={() => { handle.remove(room.id) }}><i className="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    )}
             </div>
             <div className="modal fade text-white" id="newFacultyModal" aria-labelledby="newFacultyModalLabel" aria-hidden="true" data-bs-theme="dark">
                 <div className="modal-dialog modal-dialog-centered">
@@ -280,15 +286,16 @@ export const Subject = ({ classId, id, facultyIds, i, onDeleteBtnPress }: { id: 
         <div className="border-b-2 p-3 flex flex-row items-center">
             <p>{sub?.name} {i && `#${i}`}</p>
             <button type="button" className="btn btn-outline-secondary dropdown-toggle ml-auto font-medium text-primary" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                {subFaculties?.map(e => e.name).length == 0 ? ["No faculty assigned"] : subFaculties?.map(e => e.name).join(", ")}
+                {subFaculties?.map(e => e.name).length == 0 ? ["No faculty assigned"] : subFaculties?.map(e => `${e.name}`).join(", ")}
             </button>
             <div className="dropdown-menu p-4">
-                {faculties?.map(faculty => <div key={faculty.id} className="p-2 border-b-2 flex flex-row items-center">
-                    <label htmlFor={`checkBox${classId}${sub.id}${faculty.id}`} className="cursor-pointer">{faculty.name}</label>
-                    <input className="ml-auto cursor-pointer" type="checkbox" name="" id={`checkBox${classId}${sub.id}${faculty.id}`} checked={subFaculties?.map(e => e.id).includes(faculty.id)} onChange={() => {
-                        handle.addSubjectFaculty(sub.id, faculty.id)
-                    }} />
-                </div>)}
+                {
+                    faculties?.map(faculty => <div key={faculty.id} className="p-2 border-b-2 flex flex-row items-center">
+                        <label htmlFor={`checkBox${classId}${sub.id}${faculty.id}`} className="cursor-pointer">{faculty.name}</label>
+                        <input className="ml-auto cursor-pointer" type="checkbox" name="" id={`checkBox${classId}${sub.id}${faculty.id}`} checked={subFaculties?.map(e => e.id).includes(faculty.id)} onChange={() => {
+                            handle.addSubjectFaculty(sub.id, faculty.id)
+                        }} />
+                    </div>)}
             </div>
             <button className="btn btn-danger ml-3" onClick={onDeleteBtnPress}><i className="bi bi-trash"></i></button>
         </div>

@@ -15,15 +15,16 @@ const DEFAULT = {
 
 const create = (name: string, dir: string) => {
     try {
+        if (exists(path.join(dir, name))) return { error: { name: "DepartmentExists", message: "department already exists" } }
         name = name.toUpperCase();
         fs.mkdirSync(path.join(config.dataFolder, dir, name), { recursive: true })
         createRequiredFiles(path.join(dir, name))
         initializeTimetableFile(path.join(dir, name))
-        return true
+        return { status: { success: true, message: "department created" } }
     }
     catch (err) {
         console.log(err);
-        return false
+        return { error: { error: "UnknownError", message: "unknown error occured" } }
     }
 }
 const exists = (dir: string) => {

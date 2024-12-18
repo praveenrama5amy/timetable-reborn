@@ -164,25 +164,35 @@ const Faculties = () => {
             <p className="text-4xl text-center font-medium">Faculties</p>
             <button type="button" className="btn btn btn-dark block ml-auto mr-[10%]" data-bs-toggle="modal" data-bs-target="#newFacultyModal" onClick={() => { clearAllFormFields() }}>Add</button>
             <div className="container flex gap-5 flex-col">
-                {department?.faculties.map(faculty =>
-                    <div key={faculty.id} className="bg-white rounded-lg shadow-md flex p-4">
-                        <div className="flex-1">
-                            <p className="text-lg text-dimgrey font-semibold">Mr/Mrs. {faculty.name} <span className="text-khaki text-base font-normal">#{faculty.id}</span></p>
-                            <div className="flex w-100">
-                                <p>Min : {faculty.min}</p>
-                                <p className="ml-auto">Max : {faculty.max}</p>
-                            </div>
-                            <LoadBar max={faculty.max} min={faculty.min} value={getTentativeFacultyAllotmentCount(faculty.id)} />
-                        </div>
-                        <div className="flex flex-col ml-3">
-                            <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
-                                <button type="button" className="btn btn-primary" onClick={() => { handle.editBtnPress(faculty.id) }} data-bs-toggle="modal" data-bs-target="#newFacultyModal"><i className="bi bi-pencil" ></i></button>
-                                <button type="button" className="btn btn-danger" onClick={() => { handle.remove(faculty.id) }}><i className="bi bi-trash"></i></button>
-                            </div>
-                        </div>
-
+                {department?.faculties.length == 0 ?
+                    <div className="flex min-h-80 justify-center items-center text-3xl font-medium">
+                        <i className="bi bi-clipboard2-x"></i>
+                        <p>
+                            No Faculty Found
+                        </p>
                     </div>
-                )}
+                    :
+
+
+                    department?.faculties.map(faculty =>
+                        <div key={faculty.id} className="bg-white rounded-lg shadow-md flex p-4">
+                            <div className="flex-1">
+                                <p className="text-lg text-dimgrey font-semibold">Mr/Mrs. {faculty.name} <span className="text-khaki text-base font-normal">#{faculty.id}</span></p>
+                                <div className="flex w-100">
+                                    <p>Min : {faculty.min}</p>
+                                    <p className="ml-auto">Max : {faculty.max}</p>
+                                </div>
+                                <LoadBar max={faculty.max} min={faculty.min} value={getTentativeFacultyAllotmentCount(faculty.id)} />
+                            </div>
+                            <div className="flex flex-col ml-3">
+                                <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                    <button type="button" className="btn btn-primary" onClick={() => { handle.editBtnPress(faculty.id) }} data-bs-toggle="modal" data-bs-target="#newFacultyModal"><i className="bi bi-pencil" ></i></button>
+                                    <button type="button" className="btn btn-danger" onClick={() => { handle.remove(faculty.id) }}><i className="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    )}
 
                 <div className="modal fade text-white" id="newFacultyModal" aria-labelledby="newFacultyModalLabel" aria-hidden="true" data-bs-theme="dark">
                     <div className="modal-dialog modal-dialog-centered">

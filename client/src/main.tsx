@@ -18,6 +18,7 @@ import Home from './pages/Home.tsx';
 import Faculties from './pages/Faculties.tsx';
 import Subjects from './pages/Subjects.tsx';
 import Timetable from './pages/Timetable.tsx';
+import Print from './pages/Print.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <AppDataProvider>
@@ -28,13 +29,15 @@ createRoot(document.getElementById('root')!).render(
             <Route path='login' Component={Login} />
           </Route>
           <Route path='/' Component={App}  >
-            <Route path='/' Component={Home} />
+            {/* <Route path='/' Component={Home} /> */}
+            <Route path='/' Component={Subjects} />
             <Route path='/home' Component={Home} />
             <Route path='/classes' Component={Classes} />
             <Route path='/faculties' Component={Faculties} />
             <Route path='/subjects' Component={Subjects} />
             <Route path='/timetable' Component={Timetable} />
           </Route>
+          <Route path='/print' Component={Print} />
         </Routes>
       </BrowserRouter >
     </AuthProvider>

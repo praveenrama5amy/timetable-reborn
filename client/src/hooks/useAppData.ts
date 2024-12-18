@@ -1,5 +1,3 @@
-
-import { useEffect } from "react"
 import { useAppDataContext } from "../context/AppDataContext"
 import useAxiosPrivate from "./useAxiosPrivate"
 
@@ -28,14 +26,21 @@ const useAppData = () => {
             return err
         }
     }
-    const fetchConflicts = (name: string) => {
-
+    const createDepartment = async (name: string) => {
+        const res = await axiosPrivate.post("/department/create", { name })
+        if (res.data.status) await fetchDepatments()
+        return res
+    }
+    const deleteDepartment = async (name: string) => {
+        const res = await axiosPrivate.delete(`/department/${name}`)
+        if (res.data.status) await fetchDepatments()
+        return res
     }
 
     return {
         conflicts, department, departments, loading, profile,
 
-        fetchDepatments, fetchDepatment, fetchConflicts
+        fetchDepatments, fetchDepatment, createDepartment, deleteDepartment
 
     }
 }

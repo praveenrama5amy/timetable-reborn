@@ -109,11 +109,19 @@ const Timetable = () => {
             if (res.data.error) {
                 setError(res.data.error)
             }
+        },
+        printBtnPress: () => {
+            navigate("/print", { state: department })
         }
     }
 
     if (department == null) return;
-    if (department.classes.length == 0) return navigate("/classes");
+    if (department.classes.length == 0) {
+        navigate("/classes");
+        return
+    };
+
+
 
     const room = department.classes.find(e => e.id == classSelected)
     const roomFacultiesAssigned = room?.subjects.map(e => e.faculties).flat()
@@ -126,6 +134,10 @@ const Timetable = () => {
     const getAlloted = useCallback((subId: number) => {
         return timetable.flat().filter(e => e == subId).length
     }, [department, classSelected])
+    useEffect(() => {
+        if (selectMode == false) handle.unSelectAll()
+    }, [selectMode])
+
     if (conflicts.length > 0) return <div className="h-100">
         <p className="text-4xl text-center font-medium">Conflicts</p>
         <p className="mt-10 ml-5 text-lg font-medium text-red-500">There is some conflict in the given inputs. Correct the conflicts to proceed further</p>
@@ -145,13 +157,11 @@ const Timetable = () => {
             )}
         </div>
     </div>
-    useEffect(() => {
-        if (selectMode == false) handle.unSelectAll()
-    }, [selectMode])
-
     return (
         <div className="h-100">
             <p className="text-3xl font-medium text-center">Timetable</p>
+            {/* Print Button */}
+            <button className="w-[70px] btn btn-dark block ml-auto mr-10" onClick={handle.printBtnPress}>Print</button>
             {/* Options Container */}
             <div className="flex justify-center items-center">
                 <button className={`btn rounded-3xl ml-10 ${selectMode ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => { setSelectMode(!selectMode) }}>Select</button>

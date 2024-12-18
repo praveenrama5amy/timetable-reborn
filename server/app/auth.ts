@@ -32,7 +32,10 @@ export const verify = (token: string) => {
 }
 
 export const sign = (payload: any) => {
-    return jwt.sign(payload, PRIVATE_KEY, { expiresIn: "10d", algorithm: "RS256" })
+    return jwt.sign(payload, PRIVATE_KEY, {
+        expiresIn: "10d",
+        algorithm: "RS256"
+    })
 }
 // console.log(sign({ id: 1, username: "Praveen", email: "praveenramasamy123@gmail.com", avatar: "" }));
 

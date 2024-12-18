@@ -161,28 +161,37 @@ const Subject = () => {
             <p className="text-4xl text-center font-medium">Subjects</p>
             <button type="button" className="btn btn btn-dark block ml-auto mr-[10%]" data-bs-toggle="modal" data-bs-target="#newSubjectModal" onClick={() => { clearAllFormFields() }}>Add</button>
             <div className="container flex gap-5 flex-col">
-                {department?.subjects.map(subject =>
-                    <div key={subject.id} className="bg-white rounded-lg shadow-md flex p-4">
-                        <div className="flex-1">
-                            <p className="text-lg text-dimgrey font-semibold">{subject.name} <span className="text-khaki text-base font-normal">#{subject.id}</span></p>
-                            <div className="flex-col ml-8 w-100">
-                                <p>Hours per week : {subject.hoursPerWeek}</p>
-                                <p>Priority : {subject.priority}</p>
-                                <p>Consecutive : {subject.consecutive}</p>
-                                <p>Before : {subject.before}</p>
-                                <p>After : {subject.after}</p>
-                            </div>
-                            {/* <LoadBar max={subject.max} min={subject.min} value={subject.timetable.flat().filter(e => e != null).length} /> */}
-                        </div>
-                        <div className="flex flex-col ml-3">
-                            <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
-                                <button type="button" className="btn btn-primary" onClick={() => { handle.editBtnPress(subject.id) }} data-bs-toggle="modal" data-bs-target="#newSubjectModal"><i className="bi bi-pencil" ></i></button>
-                                <button type="button" className="btn btn-danger" onClick={() => { handle.remove(subject.id) }}><i className="bi bi-trash"></i></button>
-                            </div>
-                        </div>
-
+                {department?.subjects.length == 0 ?
+                    <div className="flex min-h-80 justify-center items-center text-3xl font-medium">
+                        <i className="bi bi-clipboard2-x"></i>
+                        <p>
+                            No Subject Found
+                        </p>
                     </div>
-                )}
+                    :
+
+                    department?.subjects.map(subject =>
+                        <div key={subject.id} className="bg-white rounded-lg shadow-md flex p-4">
+                            <div className="flex-1">
+                                <p className="text-lg text-dimgrey font-semibold">{subject.name} <span className="text-khaki text-base font-normal">#{subject.id}</span></p>
+                                <div className="flex-col ml-8 w-100">
+                                    <p>Hours per week : {subject.hoursPerWeek}</p>
+                                    <p>Priority : {subject.priority}</p>
+                                    <p>Consecutive : {subject.consecutive}</p>
+                                    <p>Before : {subject.before}</p>
+                                    <p>After : {subject.after}</p>
+                                </div>
+                                {/* <LoadBar max={subject.max} min={subject.min} value={subject.timetable.flat().filter(e => e != null).length} /> */}
+                            </div>
+                            <div className="flex flex-col ml-3">
+                                <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                    <button type="button" className="btn btn-primary" onClick={() => { handle.editBtnPress(subject.id) }} data-bs-toggle="modal" data-bs-target="#newSubjectModal"><i className="bi bi-pencil" ></i></button>
+                                    <button type="button" className="btn btn-danger" onClick={() => { handle.remove(subject.id) }}><i className="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    )}
 
                 <div className="modal fade text-white" id="newSubjectModal" aria-labelledby="newFacultyModalLabel" aria-hidden="true" data-bs-theme="dark">
                     <div className="modal-dialog modal-dialog-centered">
